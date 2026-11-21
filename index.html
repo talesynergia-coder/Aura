@@ -53,7 +53,7 @@ body.editing .w::after{content:attr(data-label);position:absolute;left:0;top:-30
 #art.vinyl::before{content:'';position:absolute;z-index:2;left:50%;top:50%;width:15%;height:15%;transform:translate(-50%,-50%);border-radius:50%;background:#0b0b0e;box-shadow:0 0 0 3px rgba(255,255,255,.12)}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* info */
-#info{width:min(46vw,640px);text-align:center}
+#info{width:calc(min(46vw,640px)*var(--wx,1));text-align:center}
 #tTitle{font-size:var(--tsize);font-weight:800;line-height:1.1;text-shadow:0 2px 18px rgba(0,0,0,.5)}
 #tArtist{margin-top:6px;font-size:calc(var(--tsize)*.55);opacity:.8;font-weight:500}
 #tAlbum{margin-top:3px;font-size:calc(var(--tsize)*.4);opacity:.5;letter-spacing:.04em}
@@ -63,7 +63,7 @@ body.editing .w::after{content:attr(data-label);position:absolute;left:0;top:-30
 #pBar::before{content:'';position:absolute;inset:-8px 0}
 #pFill{height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
 /* lyrics */
-#lyrics{width:min(32vw,540px)}
+#lyrics{width:calc(min(32vw,540px)*var(--wx,1))}
 #lyr{display:flex;flex-direction:column;gap:.32em;font-family:var(--lfont);font-weight:800;line-height:1.08;font-size:var(--lsize);text-shadow:0 2px 24px rgba(0,0,0,.55)}
 #lyr.up{text-transform:uppercase}
 #lyr[data-align=center]{text-align:center}#lyr[data-align=right]{text-align:right}
@@ -71,7 +71,7 @@ body.editing .w::after{content:attr(data-label);position:absolute;left:0;top:-30
 #lyr[data-align=center] .ln{transform-origin:center}#lyr[data-align=right] .ln{transform-origin:right center}
 #lyr .ln.d2{opacity:.2}#lyr .ln.d1{opacity:.42}
 #lyr .ln.cur{opacity:1;transform:scale(1);text-shadow:0 0 34px color-mix(in srgb,var(--accent) 65%,transparent)}
-#lyrFull{display:none;position:relative;height:min(58vh,520px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:none;font-family:var(--lfont);font-weight:800;font-size:calc(var(--lsize)*.72);line-height:1.15;padding:22vh 0;text-shadow:0 2px 24px rgba(0,0,0,.55);-webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
+#lyrFull{display:none;position:relative;height:calc(min(58vh,520px)*var(--hx,1));overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:none;font-family:var(--lfont);font-weight:800;font-size:calc(var(--lsize)*.72);line-height:1.15;padding:22vh 0;text-shadow:0 2px 24px rgba(0,0,0,.55);-webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
 #lyrFull::-webkit-scrollbar{display:none}
 #lyrFull.up{text-transform:uppercase}
 #lyrFull .fl{opacity:.28;padding:.16em 0;cursor:pointer;transition:opacity .35s,transform .35s;transform:scale(.94);transform-origin:left center}
@@ -81,7 +81,7 @@ body.editing .w::after{content:attr(data-label);position:absolute;left:0;top:-30
 #lyrics.full #lyr{display:none}#lyrics.full #lyrFull{display:block}
 #lyr .ln.sub{font-size:.42em;font-weight:500;opacity:.6;text-transform:none;letter-spacing:0}
 /* queue */
-#queue{width:min(26vw,360px)}
+#queue{width:calc(min(26vw,360px)*var(--wx,1))}
 #qlist{max-height:calc(var(--qrows,4)*66px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:none}
 #qlist::-webkit-scrollbar{display:none}
 .qhead{font-size:10px;letter-spacing:.16em;font-weight:800;opacity:.55;margin:2px 4px 6px;text-transform:uppercase}
@@ -171,7 +171,7 @@ code,.code{font:11.5px ui-monospace,Menlo,Consolas,monospace;background:rgba(255
 #specc{display:block}
 #cover img{display:block;width:var(--cover);height:var(--cover);object-fit:cover;background:#111;border-radius:calc(var(--cradius)*1px)}
 #cover.sh img{box-shadow:0 16px 50px rgba(0,0,0,.55)}
-#txtW{white-space:pre-wrap;max-width:70vw;line-height:1.15;text-shadow:0 2px 20px rgba(0,0,0,.5)}
+#txtW{white-space:pre-wrap;max-width:calc(70vw*var(--wx,1));line-height:1.15;text-shadow:0 2px 20px rgba(0,0,0,.5)}
 #imgW{display:block;background:rgba(255,255,255,.06)}
 #fcast{display:flex;gap:6px}
 .fd{text-align:center;min-width:62px;padding:2px 6px}.fd b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.6;font-weight:700}.fd i{display:block;font-style:normal;font-size:24px;margin:4px 0}.fd span{font-size:12px;font-variant-numeric:tabular-nums}.fd em{font-style:normal;opacity:.5;margin-left:4px}
@@ -195,6 +195,12 @@ body.editing #toast{bottom:auto;top:84px}
 .chip.on{background:color-mix(in srgb,var(--accent) 35%,transparent);box-shadow:inset 0 0 0 1.5px var(--accent)}
 .chip.cur{outline:2px solid #fff}
 #tray .tr{display:flex;gap:6px;align-items:center;font-size:12px;flex-wrap:wrap;justify-content:center}
+/* resize handles */
+.hdl{position:fixed;z-index:36;display:none;width:32px;height:32px;margin:-16px 0 0 -16px;border-radius:50%;background:var(--accent);color:#000;box-shadow:0 2px 10px rgba(0,0,0,.55),0 0 0 3px rgba(255,255,255,.9);touch-action:none;place-items:center;cursor:nwse-resize}
+body.editing .hdl.show{display:grid}
+.hdl svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#hR{cursor:ew-resize;border-radius:11px;width:24px;height:40px;margin:-20px 0 0 -12px}
+#hB{cursor:ns-resize;border-radius:11px;width:40px;height:24px;margin:-12px 0 0 -20px}
 </style>
 </head>
 <body>
@@ -222,7 +228,7 @@ body.editing #toast{bottom:auto;top:84px}
 </div>
 
 <div id="welcome"><div class="wcard">
-  <h1>AURA<em>.</em></h1>
+  <img src="icons/icon.svg" alt="" width="64" height="64" style="display:block;border-radius:16px;margin-bottom:14px"><h1>AURA<em>.</em></h1>
   <p>A full-screen vinyl now-playing display for Spotify. Sign in once and AURA plays the music right here in the browser — no Spotify app needed (Spotify Premium required).</p>
   <ol>
     <li>Open <b>developer.spotify.com/dashboard</b> → <b>Create app</b> and tick both <b>“Web API”</b> and <b>“Web Playback SDK”</b>.</li>
@@ -250,6 +256,9 @@ body.editing #toast{bottom:auto;top:84px}
   <button class="ib" id="btnSleep" title="Sleep timer"><svg class="st" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
   <input id="vol" type="range" min="0" max="100" value="60" title="Volume">
 </div>
+<div class="hdl" id="hC" title="Drag: bigger / smaller"><svg viewBox="0 0 24 24"><path d="M6 18 18 6M10 6h8v8M6 10v8h8"/></svg></div>
+<div class="hdl" id="hR" title="Drag: wider / narrower"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg></div>
+<div class="hdl" id="hB" title="Drag: taller / shorter"><svg viewBox="0 0 24 24"><path d="M7 8l5-5 5 5M7 16l5 5 5-5"/></svg></div>
 <div id="tray" class="ui keep"><div id="chips"></div><div class="tr"><span id="selName" style="opacity:.7">Tap an element to select it</span><button class="btn" id="trMinus">−</button><button class="btn" id="trPlus">＋</button><button class="btn" id="trReset">Reset</button><button class="btn pri" id="trDone">Done</button></div></div>
 <aside id="panel"><header><h2 id="ptitle"></h2><button class="ib" id="pclose" style="background:none"><svg class="st" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header><div id="pbody"></div></aside>
 <div id="toast"></div>
@@ -298,7 +307,7 @@ const DEFAULTS={
   acl:{show:false,size:150,seconds:true,numerals:true},
   greet:{show:false,name:'',size:34,date:false},
   text:{show:false,text:'Good vibes only',size:36,weight:700,italic:false,opacity:.9,align:'center'},
-  img:{show:false,src:'',size:160,shape:'rounded',opacity:1},
+  img:{show:false,src:'',size:160,w:160,h:160,shape:'rounded',opacity:1},
   spec:{show:false,w:420,h:70,bars:48,mode:'bars'},
   cover:{show:false,size:200,radius:14,shadow:true},
   fcast:{show:false,days:4},
@@ -340,7 +349,7 @@ function apply(){
   r.setProperty('--artsize',cfg.art.size+'px');r.setProperty('--lsize',cfg.lyrics.size+'px');
   r.setProperty('--tsize',cfg.info.titleSize+'px');r.setProperty('--csize',cfg.clock.size+'px');r.setProperty('--spin',cfg.art.spinSpeed+'s');
   document.body.style.color=T.text;
-  for(const id of WIDGETS){const p=cfg.widgets[id],el=W[id];el.style.setProperty('--x',p.x);el.style.setProperty('--y',p.y);el.style.setProperty('--s',p.s);el.style.display=visible(id)?'':'none'}
+  for(const id of WIDGETS){const p=cfg.widgets[id],el=W[id];el.style.setProperty('--x',p.x);el.style.setProperty('--y',p.y);el.style.setProperty('--s',p.s);el.style.setProperty('--wx',p.wx||1);el.style.setProperty('--hx',p.hx||1);el.style.display=visible(id)?'':'none'}
   const a=$('#art');a.className=[cfg.art.shape==='vinyl'?'vinyl':cfg.art.shape,cfg.art.glow?'glow':'',cfg.art.spin&&(cfg.art.shape==='circle'||cfg.art.shape==='vinyl'||cfg.art.shape==='record')?'spin':'',S.playing?'playing':''].join(' ');
   $('#tAlbum').style.display=cfg.info.album?'':'none';$('#prog').classList.toggle('off',!cfg.info.progress);
   const L=$('#lyr');L.classList.toggle('up',cfg.lyrics.upper);L.dataset.align=cfg.lyrics.align;
@@ -746,7 +755,7 @@ function applyExtras(){
   $('#cover').classList.toggle('sh',cfg.cover.shadow);
   const X=cfg.text,tx=$('#txtW');tx.style.cssText=`font-size:${X.size}px;font-weight:${X.weight};font-style:${X.italic?'italic':'normal'};opacity:${X.opacity};text-align:${X.align}`;
   tx.textContent=X.text?X.text.replace(/\\n/g,'\n'):'✎ Add text in Settings';
-  const I=cfg.img,im=$('#imgW');im.style.cssText=`width:${I.size}px;height:${I.size}px;opacity:${I.opacity};border-radius:${I.shape==='circle'?'50%':I.shape==='rounded'?'14%':'0'};object-fit:${I.shape==='logo'?'contain':'cover'}${I.shape==='logo'?';background:none':''}`;
+  const I=cfg.img,im=$('#imgW');im.style.cssText=`width:${I.w||I.size}px;height:${I.h||I.size}px;opacity:${I.opacity};border-radius:${I.shape==='circle'?'50%':I.shape==='rounded'?'14%':'0'};object-fit:${I.shape==='logo'?'contain':'cover'}${I.shape==='logo'?';background:none':''}`;
   if(im._s!==I.src){im._s=I.src;I.src?im.src=I.src:im.removeAttribute('src')}
   buildAcl();calKey='';renderFcast();
 }
@@ -830,7 +839,7 @@ function frame(t){
   const p=pos();
   $('#pFill').style.width=(S.track?clamp(p/(S.track.dur||1),0,1)*100:0)+'%';
   const s=Math.floor(p/1000);if(s!==lastSec){lastSec=s;$('#pCur').textContent=fmt(p)}
-  updateLyrics(p);drawViz(t);if(cfg.acl.show)drawAcl();if(cfg.spec.show)drawSpec(t);
+  updateLyrics(p);drawViz(t);if(cfg.acl.show)drawAcl();if(cfg.spec.show)drawSpec(t);if(document.body.classList.contains('editing'))posHandles();
 }
 
 /* ───────── library / devices panel ───────── */
@@ -1001,7 +1010,7 @@ const SCHEMA=[
   {type:'btn',l:'Reset everything',fn:()=>{if(confirm('Reset all settings?')){const id=cfg.clientId;cfg=merge(DEFAULTS,{clientId:id});save();apply();buildSettings()}}}]}
 ];
 function row(label,ctrl,val){const r=document.createElement('div');r.className='row';const l=document.createElement('label');l.textContent=label;r.append(l,ctrl);if(val)r.appendChild(val);return r}
-function onChange(k){save();apply();
+function onChange(k){if(k==='img.size')cfg.img.w=cfg.img.h=cfg.img.size;save();apply();
   if(k==='viz.source'){cfg.viz.source==='sim'?stopAudio():startAudio(cfg.viz.source)}
   if(k.startsWith('weather.')||k==='weather'||k==='fcast.show'||k==='fcast.days')loadWeatherSoon();
   if(k==='ui.browserPlayer')cfg.ui.browserPlayer?startSdk():stopSdk();
@@ -1043,7 +1052,7 @@ function buildTray(){const c=$('#chips');c.textContent='';
     b.onclick=()=>{const on=!visible(id);(id==='disc'?cfg.art:cfg[id]).show=on;save();apply();buildTray();if(on){selectW(id);toast(W[id].dataset.label+' added — drag it into place',2500);if(id==='fcast')loadWeatherSoon()}else if(selW===id)selectW(null)};c.appendChild(b)}
   selectW(selW&&visible(selW)?selW:null)}
 function setEdit(on){document.body.classList.toggle('editing',on);$('#tbEdit').classList.toggle('active',on);
-  if(on){buildTray();toast('Layout mode: drag to move · pinch or − ＋ to resize · tap the chips to add or remove elements',6000)}else{selectW(null);save()}}
+  if(on){buildTray();toast('Layout mode: drag to move · drag the round handles (corner = size, sides = wider/taller) · tap chips to add or remove',6000)}else{selectW(null);save()}}
 function nudge(f){if(!selW)return;const p=cfg.widgets[selW];p.s=clamp(p.s*f,.25,4);W[selW].style.setProperty('--s',p.s);save()}
 $('#trPlus').onclick=()=>nudge(1.1);$('#trMinus').onclick=()=>nudge(1/1.1);$('#trDone').onclick=()=>setEdit(false);
 $('#trReset').onclick=()=>{if(!selW)return;cfg.widgets[selW]={...DEFAULTS.widgets[selW]};apply();save()};
@@ -1059,6 +1068,38 @@ addEventListener('pointermove',e=>{const q=ptr.get(e.pointerId);if(q){q.x=e.clie
   if(!drag||e.pointerId!==drag.pid)return;const p=cfg.widgets[drag.id];p.x=clamp(drag.ox+(e.clientX-drag.sx)/innerWidth*100,0,100);p.y=clamp(drag.oy+(e.clientY-drag.sy)/innerHeight*100,0,100);drag.w.style.setProperty('--x',p.x);drag.w.style.setProperty('--y',p.y)});
 const endP=e=>{ptr.delete(e.pointerId);if(pinch&&ptr.size<2){pinch=null;save()}if(drag&&e.pointerId===drag.pid){drag.w.style.cursor='';drag=null;save()}};
 addEventListener('pointerup',endP);addEventListener('pointercancel',endP);
+/* resize handles: corner = bigger/smaller, right = wider/narrower, bottom = taller/shorter */
+const wxP=id=>({get:()=>cfg.widgets[id].wx||1,set:v=>{cfg.widgets[id].wx=clamp(v,.3,3);W[id].style.setProperty('--wx',cfg.widgets[id].wx)}});
+const odd=n=>{n=clamp(Math.round(n),1,9);return n%2?n:n+1};
+const RES={
+  info:{w:wxP('info')},
+  text:{w:wxP('text'),after:()=>applyExtras()},
+  lyrics:{w:wxP('lyrics'),h:{get:()=>useFull()?(cfg.widgets.lyrics.hx||1):cfg.lyrics.lines,set:v=>{if(useFull()){cfg.widgets.lyrics.hx=clamp(v,.3,2.2);W.lyrics.style.setProperty('--hx',cfg.widgets.lyrics.hx)}else{cfg.lyrics.lines=odd(v);renderLyrics(true)}}}},
+  queue:{w:wxP('queue'),h:{get:()=>cfg.queue.count,set:v=>{cfg.queue.count=clamp(Math.round(v),1,8);renderQueue()}}},
+  spec:{w:{get:()=>cfg.spec.w,set:v=>cfg.spec.w=clamp(Math.round(v),120,1600)},h:{get:()=>cfg.spec.h,set:v=>cfg.spec.h=clamp(Math.round(v),20,400)}},
+  img:{w:{get:()=>cfg.img.w||cfg.img.size,set:v=>cfg.img.w=clamp(Math.round(v),40,1200)},h:{get:()=>cfg.img.h||cfg.img.size,set:v=>cfg.img.h=clamp(Math.round(v),40,1200)},after:()=>applyExtras()},
+  fcast:{w:{get:()=>cfg.fcast.days,set:v=>{cfg.fcast.days=clamp(Math.round(v),2,6);renderFcast()}}}
+};
+let hd=null;
+function posHandles(){
+  const C=$('#hC'),R=$('#hR'),B=$('#hB');
+  if(!selW||!visible(selW)){[C,R,B].forEach(x=>x.classList.remove('show'));return}
+  const r=W[selW].getBoundingClientRect(),m=10,cl=(v,a,b)=>clamp(v,a,b),res=RES[selW]||{};
+  const put=(el,x,y,on)=>{el.classList.toggle('show',!!on);el.style.left=cl(x,18,innerWidth-18)+'px';el.style.top=cl(y,18,innerHeight-18)+'px'};
+  put(C,r.right+m,r.bottom+m,true);put(R,r.right+m,r.top+r.height/2,res.w);put(B,r.left+r.width/2,r.bottom+m,res.h);
+}
+function startH(kind,e){
+  if(!selW)return;e.preventDefault();e.stopPropagation();
+  const r=W[selW].getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,res=RES[selW]||{};
+  hd={kind,id:selW,cx,cy,d0:Math.hypot(e.clientX-cx,e.clientY-cy)||1,hw:Math.abs(e.clientX-cx)||1,hh:Math.abs(e.clientY-cy)||1,s0:cfg.widgets[selW].s,w0:res.w?.get(),h0:res.h?.get()};
+  try{e.target.setPointerCapture(e.pointerId)}catch(_){}
+}
+[['hC','c'],['hR','r'],['hB','b']].forEach(([id,k])=>$('#'+id).addEventListener('pointerdown',e=>startH(k,e)));
+addEventListener('pointermove',e=>{if(!hd)return;const res=RES[hd.id]||{};
+  if(hd.kind==='c'){const s=clamp(hd.s0*Math.hypot(e.clientX-hd.cx,e.clientY-hd.cy)/hd.d0,.25,4);cfg.widgets[hd.id].s=s;W[hd.id].style.setProperty('--s',s)}
+  else if(hd.kind==='r'&&res.w){res.w.set(hd.w0*Math.abs(e.clientX-hd.cx)/hd.hw);res.after?.()}
+  else if(hd.kind==='b'&&res.h){res.h.set(hd.h0*Math.abs(e.clientY-hd.cy)/hd.hh);res.after?.()}});
+const endH=()=>{if(hd){hd=null;save()}};addEventListener('pointerup',endH);addEventListener('pointercancel',endH);
 addEventListener('wheel',e=>{if(!document.body.classList.contains('editing'))return;const w=e.target.closest?.('.w');if(!w)return;e.preventDefault();const p=cfg.widgets[w.dataset.w];p.s=clamp(p.s*Math.exp(-e.deltaY*.0012),.25,4);w.style.setProperty('--s',p.s);save()},{passive:false});
 
 /* ───────── wiring ───────── */
