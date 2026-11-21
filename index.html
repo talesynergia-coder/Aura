@@ -3,7 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NEEDLE</title>
+<title>AURA</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#05060a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AURA">
 <style>
 :root{
   --accent:#ff5a3c; --accent2:#ffb03c; --text:#fff;
@@ -156,6 +164,37 @@ code,.code{font:11.5px ui-monospace,Menlo,Consolas,monospace;background:rgba(255
 #toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,20px);background:rgba(20,21,28,.95);padding:10px 16px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:.3s;z-index:60;max-width:90vw;text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:700px){#vol{display:none}#dock{bottom:12px}}
+
+/* extra elements */
+.card2{padding:12px 16px;border-radius:16px;background:rgba(0,0,0,var(--glass));backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur))}
+#acl svg{display:block;filter:drop-shadow(0 6px 24px rgba(0,0,0,.45))}
+#specc{display:block}
+#cover img{display:block;width:var(--cover);height:var(--cover);object-fit:cover;background:#111;border-radius:calc(var(--cradius)*1px)}
+#cover.sh img{box-shadow:0 16px 50px rgba(0,0,0,.55)}
+#txtW{white-space:pre-wrap;max-width:70vw;line-height:1.15;text-shadow:0 2px 20px rgba(0,0,0,.5)}
+#imgW{display:block;background:rgba(255,255,255,.06)}
+#fcast{display:flex;gap:6px}
+.fd{text-align:center;min-width:62px;padding:2px 6px}.fd b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.6;font-weight:700}.fd i{display:block;font-style:normal;font-size:24px;margin:4px 0}.fd span{font-size:12px;font-variant-numeric:tabular-nums}.fd em{font-style:normal;opacity:.5;margin-left:4px}
+#wclk{min-width:210px}.wz{display:flex;justify-content:space-between;align-items:baseline;gap:22px;padding:4px 0}.wz b{font-size:13px;font-weight:600;opacity:.75}.wz span{font-size:var(--wcsize);font-weight:300;font-variant-numeric:tabular-nums}.wz em{font-style:normal;font-size:10px;opacity:.5;margin-left:6px;letter-spacing:.08em}
+#greet{white-space:nowrap}#grT{font-size:var(--gsize);font-weight:700;line-height:1.1;text-shadow:0 2px 18px rgba(0,0,0,.5)}#grD{margin-top:6px;font-size:calc(var(--gsize)*.42);opacity:.6;letter-spacing:.1em;text-transform:uppercase}
+#calT{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+#calg{display:grid;grid-template-columns:repeat(7,30px);gap:2px;text-align:center;font-size:12px}
+.cd{height:28px;line-height:28px;border-radius:50%;font-variant-numeric:tabular-nums}.cd.h{opacity:.45;font-size:10px;font-weight:700}.cd.t{background:var(--accent);color:#000;font-weight:800}
+#timer{display:flex;align-items:center;gap:10px;font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}body:not(.editing) #timer{cursor:pointer}
+#btnSleep.on{color:var(--accent)}
+#tbDev{position:relative}
+#tbDev::after{content:'';position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:transparent}
+#tbDev[data-st=ready]::after{background:#3ddc84}#tbDev[data-st=loading]::after{background:#ffb03c}#tbDev[data-st=failed]::after{background:#ff5a5a}
+/* layout tray */
+body.editing .w.sel{outline:2.5px solid var(--accent)}
+#tray{position:fixed;left:50%;bottom:98px;transform:translateX(-50%);z-index:35;display:none;flex-direction:column;gap:8px;align-items:center;width:min(94vw,860px);padding:10px 12px;border-radius:18px;background:rgba(10,11,16,.84);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.1)}
+body.editing #tray{display:flex}
+body.editing #toast{bottom:auto;top:84px}
+#chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.chip{padding:6px 11px;border-radius:99px;font-size:12px;font-weight:600;background:rgba(255,255,255,.09)}
+.chip.on{background:color-mix(in srgb,var(--accent) 35%,transparent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.chip.cur{outline:2px solid #fff}
+#tray .tr{display:flex;gap:6px;align-items:center;font-size:12px;flex-wrap:wrap;justify-content:center}
 </style>
 </head>
 <body>
@@ -170,18 +209,28 @@ code,.code{font:11.5px ui-monospace,Menlo,Consolas,monospace;background:rgba(255
   <div class="w" data-w="queue" data-label="Queue"><div id="queue"></div></div>
   <div class="w" data-w="clock" data-label="Clock"><div id="clock"><div id="clkT"></div><div id="clkD"></div></div></div>
   <div class="w" data-w="weather" data-label="Weather"><div id="weather"><span id="wIcon"></span><div><div id="wTemp"></div><div id="wDesc"></div></div></div></div>
+  <div class="w" data-w="acl" data-label="Analog clock"><div id="acl"></div></div>
+  <div class="w" data-w="spec" data-label="Spectrum"><canvas id="specc"></canvas></div>
+  <div class="w" data-w="cover" data-label="Album cover"><div id="cover"><img id="coverimg" alt=""></div></div>
+  <div class="w" data-w="text" data-label="Custom text"><div id="txtW"></div></div>
+  <div class="w" data-w="img" data-label="Image / logo"><img id="imgW" alt=""></div>
+  <div class="w" data-w="fcast" data-label="Forecast"><div id="fcast" class="card2"></div></div>
+  <div class="w" data-w="wclk" data-label="World clock"><div id="wclk" class="card2"></div></div>
+  <div class="w" data-w="greet" data-label="Greeting"><div id="greet"><div id="grT"></div><div id="grD"></div></div></div>
+  <div class="w" data-w="timer" data-label="Sleep timer"><div id="timer" class="card2"></div></div>
+  <div class="w" data-w="cal" data-label="Calendar"><div id="cal" class="card2"><div id="calT"></div><div id="calg"></div></div></div>
 </div>
 
 <div id="welcome"><div class="wcard">
-  <h1>NEEDLE<em>.</em></h1>
-  <p>A full-screen vinyl now-playing display for Spotify. Your Client ID is already filled in — just add the redirect URI below to your Spotify app and connect.</p>
+  <h1>AURA<em>.</em></h1>
+  <p>A full-screen vinyl now-playing display for Spotify. Sign in once and AURA plays the music right here in the browser — no Spotify app needed (Spotify Premium required).</p>
   <ol>
-    <li>Open <b>developer.spotify.com/dashboard</b> → <b>Create app</b> (tick “Web API”).</li>
+    <li>Open <b>developer.spotify.com/dashboard</b> → <b>Create app</b> and tick both <b>“Web API”</b> and <b>“Web Playback SDK”</b>.</li>
     <li>Add this exact Redirect URI: <span class="code" id="wRedirect"></span></li>
     <li>Paste your app’s <b>Client ID</b> below (no secret needed).</li>
   </ol>
   <input id="wClient" type="text" placeholder="Spotify Client ID" spellcheck="false" autocomplete="off">
-  <div class="acts"><button class="btn pri" id="wConnect">Connect Spotify</button><button class="btn" id="wDemo">Try demo mode</button><button class="btn" id="wCopy">Copy redirect URI</button></div>
+  <div class="acts"><button class="btn pri" id="wConnect">Sign in with Spotify</button><button class="btn" id="wDemo">Try demo mode</button><button class="btn" id="wCopy">Copy redirect URI</button></div>
 </div></div>
 
 <div id="toolbar" class="ui">
@@ -198,8 +247,10 @@ code,.code{font:11.5px ui-monospace,Menlo,Consolas,monospace;background:rgba(255
   <button class="ib" id="btnPlay" title="Play / pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
   <button class="ib" id="btnNext" title="Next (N)"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
   <button class="ib" id="btnRep" title="Repeat"><svg class="st" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></svg></button>
+  <button class="ib" id="btnSleep" title="Sleep timer"><svg class="st" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
   <input id="vol" type="range" min="0" max="100" value="60" title="Volume">
 </div>
+<div id="tray" class="ui keep"><div id="chips"></div><div class="tr"><span id="selName" style="opacity:.7">Tap an element to select it</span><button class="btn" id="trMinus">−</button><button class="btn" id="trPlus">＋</button><button class="btn" id="trReset">Reset</button><button class="btn pri" id="trDone">Done</button></div></div>
 <aside id="panel"><header><h2 id="ptitle"></h2><button class="ib" id="pclose" style="background:none"><svg class="st" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header><div id="pbody"></div></aside>
 <div id="toast"></div>
 
@@ -224,7 +275,8 @@ const shiftHue=(hex,d)=>{const[h,s,l]=rgbToHsl(...hexToRgb(hex));return hslToHex
 
 /* ───────── config ───────── */
 const FONTS=['Inter','Poppins','Montserrat','Space Grotesk','Bebas Neue','Rubik','Playfair Display','Oswald','Outfit','Sora','JetBrains Mono','Syne','system-ui'];
-const WIDGETS=['disc','info','lyrics','queue','clock','weather'];
+const WIDGETS=['disc','info','lyrics','queue','clock','weather','acl','greet','text','img','spec','cover','fcast','wclk','cal','timer'];
+const EXTRA_POS={acl:[88,36,1],greet:[16,8,1],text:[50,16,1],img:[50,24,.8],spec:[50,8,1],cover:[12,58,.75],fcast:[88,57,.95],wclk:[14,20,1],cal:[88,80,.95],timer:[88,94,1]};
 const PRESETS={
   orbit:{label:'Orbit (disc center, lyrics left)',pos:{disc:[50,45,1],info:[50,80,1],lyrics:[19,42,1],queue:[15,75,1],clock:[90,15,1],weather:[11,94,1]},show:{lyrics:1,queue:1,clock:1,weather:1,info:1}},
   minimal:{label:'Minimal (just the disc)',pos:{disc:[50,44,1.15],info:[50,81,1],lyrics:[19,42,1],queue:[15,80,1],clock:[90,15,1],weather:[11,94,1]},show:{lyrics:0,queue:0,clock:0,weather:0,info:1}},
@@ -243,10 +295,20 @@ const DEFAULTS={
   info:{show:true,titleSize:30,album:true,progress:true},
   clock:{show:true,h24:true,seconds:false,date:true,size:44},
   weather:{show:true,city:'',useLocation:false,units:'c'},
-  ui:{autoHide:true,idleSecs:4,pollMs:1500,playInBrowser:false,wakeLock:true,device:''},
+  acl:{show:false,size:150,seconds:true,numerals:true},
+  greet:{show:false,name:'',size:34,date:false},
+  text:{show:false,text:'Good vibes only',size:36,weight:700,italic:false,opacity:.9,align:'center'},
+  img:{show:false,src:'',size:160,shape:'rounded',opacity:1},
+  spec:{show:false,w:420,h:70,bars:48,mode:'bars'},
+  cover:{show:false,size:200,radius:14,shadow:true},
+  fcast:{show:false,days:4},
+  wclk:{show:false,zones:'America/New_York, Europe/London, Asia/Tokyo',size:22},
+  cal:{show:false,monStart:true},
+  timer:{show:false,fade:true},
+  ui:{autoHide:true,idleSecs:4,pollMs:1500,browserPlayer:true,wakeLock:true,device:''},
   widgets:{}
 };
-DEFAULTS.widgets=Object.fromEntries(WIDGETS.map(w=>[w,{x:PRESETS.orbit.pos[w][0],y:PRESETS.orbit.pos[w][1],s:PRESETS.orbit.pos[w][2]}]));
+DEFAULTS.widgets=Object.fromEntries(WIDGETS.map(w=>{const q=PRESETS.orbit.pos[w]||EXTRA_POS[w];return[w,{x:q[0],y:q[1],s:q[2]}]}));
 const _old=store.get('aura.cfg',{})||{};
 let cfg=merge(DEFAULTS,store.get('needle.cfg',null)||{clientId:_old.clientId||DEFAULTS.clientId});
 if(!cfg.clientId)cfg.clientId=DEFAULTS.clientId;
@@ -262,7 +324,7 @@ const W=Object.fromEntries(WIDGETS.map(w=>[w,$(`[data-w=${w}]`)]));
 const loadedFonts=new Set();
 function loadFont(n){if(!n||n==='system-ui'||loadedFonts.has(n))return;loadedFonts.add(n);const l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family='+encodeURIComponent(n).replace(/%20/g,'+')+':wght@300;400;500;700;800&display=swap';document.head.appendChild(l)}
 const stack=n=>n==='system-ui'?'system-ui,sans-serif':`'${n}',system-ui,sans-serif`;
-const visible=id=>({disc:cfg.art.show,info:cfg.info.show,lyrics:cfg.lyrics.show,queue:cfg.queue.show,clock:cfg.clock.show,weather:cfg.weather.show})[id];
+const visible=id=>(id==='disc'?cfg.art:cfg[id]).show;
 function updateAccent(){
   const T=cfg.theme,a=(T.accentMode==='auto'&&S.autoAccent)?S.autoAccent:T.accent;
   S.acc=a;S.acc2=shiftHue(a,45);
@@ -283,8 +345,8 @@ function apply(){
   $('#tAlbum').style.display=cfg.info.album?'':'none';$('#prog').classList.toggle('off',!cfg.info.progress);
   const L=$('#lyr');L.classList.toggle('up',cfg.lyrics.upper);L.dataset.align=cfg.lyrics.align;
   $('#lyrics').style.textAlign=cfg.lyrics.align;
-  sizeViz();updateAccent();applyBg();renderLyrics(true);renderQueue();tickClock();
-  document.title=S.track?`${S.track.name} · ${S.track.artists}`:'NEEDLE';
+  sizeViz();updateAccent();applyBg();renderLyrics(true);renderQueue();applyExtras();tickClock();
+  document.title=S.track?`${S.track.name} · ${S.track.artists}`:'AURA';
 }
 /* background */
 let bgFlip=false;
@@ -360,16 +422,16 @@ function applyState(st){
 function uiButtons(){
   $('#playIcon').innerHTML=S.playing?'<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>':'<path d="M8 5v14l11-7z"/>';
   $('#btnShuf').classList.toggle('on',!!S.shuffle);$('#btnRep').classList.toggle('on',S.repeat&&S.repeat!=='off');
-  $('#art').classList.toggle('playing',S.playing);
+  $('#art').classList.toggle('playing',S.playing);try{navigator.mediaSession.playbackState=S.playing?'playing':'paused'}catch(e){}
 }
 function setTrack(t){
   S.track=t;
   $('#tTitle').textContent=t?t.name:'Nothing playing';
-  $('#tArtist').textContent=t?t.artists:(mode?'Start playback on any Spotify device or pick something from the library':'');
+  $('#tArtist').textContent=t?t.artists:(mode?'Open the Library (grid button) and pick something to play':'');
   $('#tAlbum').textContent=t?t.album:'';
   $('#pDur').textContent=fmt(t?.dur||0);
-  $('#artimg').src=t?.art||'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-  document.title=t?`${t.name} · ${t.artists}`:'NEEDLE';
+  $('#artimg').src=t?.art||'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';$('#coverimg').src=t?.art||'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';mediaMeta(t);
+  document.title=t?`${t.name} · ${t.artists}`:'AURA';
   if(t?.art)extractColor(t.art).then(c=>{if(S.track?.art===t.art){S.autoAccent=c;updateAccent()}});else{S.autoAccent=null;updateAccent()}
   applyBg();loadLyrics(t);loadQueue();
 }
@@ -412,6 +474,8 @@ let pollT=null,sdk=null,sdkDev=null;
 async function pollSpotify(){
   try{
     const p=await api('/me/player?additional_types=episode');
+    S.devId=p?.device?.id||null;
+    if(p&&onBrowser()){if(p.device.volume_percent!=null&&!volDrag){S.volume=p.device.volume_percent;$('#vol').value=S.volume}try{const st=await sdk.getCurrentState();if(st){applySdk(st);return}}catch(e){}}
     if(!p||!p.item){applyState({track:null,playing:false,progress:0});return}
     const it=p.item,alb=it.album||it.show||{};
     applyState({track:{id:it.id||it.uri,name:it.name,artists:(it.artists||[{name:it.show?.publisher||it.show?.name||''}]).map(a=>a.name).join(', '),album:alb.name||'',art:(alb.images||[])[0]?.url||'',dur:it.duration_ms,uri:it.uri},
@@ -452,17 +516,19 @@ async function sp(method,path,body){try{await api(path,{method,body:body?JSON.st
   else toast(e.message)}}
 const ctl={
   toggle(){if(mode==='demo'){const p=S.track?pos():0;demo.playing=!demo.playing;demo.pos=p;demo.at=performance.now();demoTick();return}
+    if(onBrowser()){sdk.togglePlay().catch(()=>{});return}
     S.playing=!S.playing;S.progress=pos();S.ts=performance.now();uiButtons();sp('PUT',S.playing?'/me/player/play':'/me/player/pause')},
-  next(){mode==='demo'?demoGo(1):sp('POST','/me/player/next')},
-  prev(){if(mode==='demo')return demoGo(pos()>3000?0:-1);pos()>3000?ctl.seek(0):sp('POST','/me/player/previous')},
-  seek(ms){if(!S.track)return;if(mode==='demo'){demo.pos=ms;demo.at=performance.now();demoTick();return}S.progress=ms;S.ts=performance.now();sp('PUT','/me/player/seek?position_ms='+Math.round(ms))},
+  next(){if(mode==='demo')demoGo(1);else if(onBrowser())sdk.nextTrack();else sp('POST','/me/player/next')},
+  prev(){if(mode==='demo')return demoGo(pos()>3000?0:-1);if(onBrowser())return pos()>3000?ctl.seek(0):sdk.previousTrack();pos()>3000?ctl.seek(0):sp('POST','/me/player/previous')},
+  seek(ms){if(!S.track)return;if(mode==='demo'){demo.pos=ms;demo.at=performance.now();demoTick();return}if(onBrowser()){S.progress=ms;S.ts=performance.now();sdk.seek(Math.round(ms));return}S.progress=ms;S.ts=performance.now();sp('PUT','/me/player/seek?position_ms='+Math.round(ms))},
   shuffle(){if(mode==='demo'){demo.shuffle=!demo.shuffle;return}S.shuffle=!S.shuffle;uiButtons();sp('PUT','/me/player/shuffle?state='+S.shuffle)},
   repeat(){const n={off:'context',context:'track',track:'off'}[S.repeat||'off'];if(mode==='demo'){demo.repeat=n;return}S.repeat=n;uiButtons();sp('PUT','/me/player/repeat?state='+n)},
-  volume(v){S.volume=v;if(mode==='spotify')sp('PUT','/me/player/volume?volume_percent='+Math.round(v))}
+  volume(v){S.volume=v;if(onBrowser()){sdk.setVolume(v/100);return}if(mode==='spotify')sp('PUT','/me/player/volume?volume_percent='+Math.round(v))}
 };
 let devCache=[];
 async function getDevices(){const j=await api('/me/player/devices');devCache=j?.devices||[];return devCache}
 async function pickDevice(){
+  if(sdkState==='ready'&&sdkDev&&(!cfg.ui.device||cfg.ui.device===sdkDev))return{id:sdkDev,name:'this browser'};
   const ds=await getDevices();if(!ds.length)return null;
   return ds.find(d=>d.id===cfg.ui.device)||ds.find(d=>d.is_active)||(sdkDev&&ds.find(d=>d.id===sdkDev))||ds.find(d=>/smartphone|tablet/i.test(d.type))||ds[0];
 }
@@ -476,22 +542,47 @@ async function spPlay(body){
     S.playing=true;S.progress=0;S.ts=performance.now();uiButtons();pollSoon();setTimeout(loadQueue,1300);return true;
   }catch(e){toast(e.status===403?'Spotify refused: '+(e.reason||e.message):e.message,6000);return false}
 }
-/* web playback sdk (desktop browsers only; iOS/iPadOS Safari cannot play Spotify DRM audio) */
-function startSdk(){
-  if(sdk||mode!=='spotify')return;
-  if(IOS){cfg.ui.playInBrowser=false;save();toast('iPad browsers can’t play Spotify audio by themselves. NEEDLE controls the Spotify app on this iPad instead — use the Devices button.',8000);if(panelKind==='settings')buildSettings();return}
-  window.onSpotifyWebPlaybackSDKReady=()=>{
-    sdk=new Spotify.Player({name:'NEEDLE Display',getOAuthToken:cb=>ensureToken().then(t=>cb(t.access)),volume:.7});
-    sdk.addListener('ready',({device_id})=>{sdkDev=device_id;cfg.ui.device=device_id;save();try{sdk.activateElement()}catch(e){}toast('Browser player ready');api('/me/player',{method:'PUT',body:JSON.stringify({device_ids:[device_id],play:false})}).catch(()=>{})});
-    sdk.addListener('not_ready',()=>{sdkDev=null});
-    sdk.addListener('autoplay_failed',()=>toast('Tap anywhere on the page to allow audio'));
-    ['initialization_error','authentication_error','account_error'].forEach(ev=>sdk.addListener(ev,e=>{toast('Browser player unavailable: '+e.message+'. Using the Spotify app instead.',7000);cfg.ui.playInBrowser=false;cfg.ui.device='';save();stopSdk();if(panelKind==='settings')buildSettings()}));
-    sdk.addListener('playback_error',e=>toast('Playback error: '+e.message));
-    sdk.connect()};
-  if(window.Spotify){window.onSpotifyWebPlaybackSDKReady();return}
-  const sc=document.createElement('script');sc.src='https://sdk.scdn.co/spotify-player.js';document.head.appendChild(sc);
+/* ───────── in-browser player (Spotify Web Playback SDK) ───────── */
+let sdkState='off',sdkMsg='',sdkTimer=null;
+const onBrowser=()=>!!(sdk&&sdkDev&&S.devId===sdkDev);
+function sdkSet(s,msg){sdkState=s;sdkMsg=msg||'';$('#tbDev').dataset.st=s;if(panelKind==='devices')buildDevices()}
+function applySdk(st){
+  const ct=st?.track_window?.current_track;if(!ct)return;
+  const im=(ct.album?.images||[]).reduce((a,b)=>(!a||(b.height||0)>(a.height||0))?b:a,null);
+  S.devId=sdkDev;
+  applyState({track:{id:ct.id||ct.uri,name:ct.name,artists:(ct.artists||[]).map(a=>a.name).join(', '),album:ct.album?.name||'',art:im?.url||'',dur:ct.duration_ms,uri:ct.uri},playing:!st.paused,progress:st.position,shuffle:st.shuffle,repeat:['off','context','track'][st.repeat_mode]||'off'});
 }
-function stopSdk(){try{sdk?.disconnect()}catch(e){}if(sdkDev&&cfg.ui.device===sdkDev){cfg.ui.device='';save()}sdk=null;sdkDev=null}
+function sdkFail(msg){clearTimeout(sdkTimer);const was=sdkDev;try{sdk?.disconnect()}catch(e){}sdk=null;sdkDev=null;if(was&&cfg.ui.device===was){cfg.ui.device='';save()}sdkSet('failed',msg);toast(msg,9000)}
+function startSdk(){
+  if(sdk||mode!=='spotify'||!cfg.ui.browserPlayer)return;
+  sdkSet('loading');clearTimeout(sdkTimer);
+  sdkTimer=setTimeout(()=>{if(sdkState==='loading')sdkFail(IOS?'This iPad/iPhone browser won’t start Spotify’s web player (Apple blocks it). Using the Spotify app instead.':'The browser player didn’t start. Make sure protected content (DRM) is allowed in this browser and the account is Spotify Premium.')},15000);
+  const init=()=>{
+    if(sdk)return;
+    sdk=new Spotify.Player({name:'AURA Display',getOAuthToken:cb=>ensureToken().then(t=>cb(t.access),()=>{}),volume:S.volume/100});
+    sdk.addListener('ready',async({device_id})=>{
+      clearTimeout(sdkTimer);sdkDev=device_id;sdkSet('ready');cfg.ui.device=device_id;save();
+      try{sdk.activateElement()}catch(e){}
+      try{
+        const p=await api('/me/player');
+        if(!p||!p.is_playing||p.device?.id===device_id){await api('/me/player',{method:'PUT',body:JSON.stringify({device_ids:[device_id],play:false})});S.devId=device_id;toast('Browser speaker ready — tap once anywhere to unlock audio',5000);setTimeout(()=>{if(!S.track&&!panelKind&&sdkState==='ready')openPanel('library')},1600)}
+        else toast('Music is playing on “'+(p.device?.name||'another device')+'”. Open Devices → “Play here” to move it to this browser.',8000);
+      }catch(e){}
+      pollSoon()});
+    sdk.addListener('not_ready',()=>{sdkDev=null;if(sdkState==='ready')sdkSet('loading')});
+    sdk.addListener('player_state_changed',st=>{if(st)applySdk(st)});
+    sdk.addListener('autoplay_failed',()=>toast('Tap anywhere on the page once to allow audio'));
+    sdk.addListener('initialization_error',e=>sdkFail(IOS?'This iPad/iPhone browser can’t run Spotify’s web player. Using the Spotify app instead.':'This browser can’t run the Spotify web player ('+e.message+'). Using the Spotify app instead.'));
+    sdk.addListener('authentication_error',e=>sdkFail('Spotify login needs refreshing ('+e.message+'). Settings → Connection → Reconnect.'));
+    sdk.addListener('account_error',e=>sdkFail('Spotify Premium is required to play audio in the browser ('+e.message+').'));
+    sdk.addListener('playback_error',e=>toast('Playback error: '+e.message));
+    sdk.connect().then(ok=>{if(!ok&&sdkState==='loading')sdkFail('Couldn’t connect the browser player.')});
+  };
+  window.onSpotifyWebPlaybackSDKReady=init;
+  if(window.Spotify&&window.Spotify.Player){init();return}
+  if(!document.getElementById('sdkjs')){const sc=document.createElement('script');sc.id='sdkjs';sc.src='https://sdk.scdn.co/spotify-player.js';sc.onerror=()=>sdkFail('Couldn’t load Spotify’s player script (network or ad-blocker?).');document.head.appendChild(sc)}
+}
+function stopSdk(){clearTimeout(sdkTimer);try{sdk?.disconnect()}catch(e){}if(sdkDev&&cfg.ui.device===sdkDev){cfg.ui.device='';save()}sdk=null;sdkDev=null;sdkSet('off')}
 
 /* ───────── lyrics (LRCLIB) ───────── */
 let lyr={id:null,state:'none',lines:[],plain:''},lyrIdx=-99,lyrUserScroll=0;const lyrCache=new Map();
@@ -584,7 +675,7 @@ async function startAudio(kind){
 function stopAudio(){try{aStream?.getTracks().forEach(t=>t.stop())}catch(e){}try{ac?.close()}catch(e){}ac=an=fq=aStream=null}
 const hash=s=>{let h=0;for(const c of s||'x')h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)};
 function spectrum(m,t){
-  const out=spectrum.o&&spectrum.o.length===m?spectrum.o:(spectrum.o=new Float32Array(m)),V=cfg.viz;
+  const out=(spectrum.c||(spectrum.c={}))[m]||(spectrum.c[m]=new Float32Array(m)),V=cfg.viz;
   if(an&&fq&&V.source!=='sim'){
     an.getByteFrequencyData(fq);
     for(let k=0;k<m;k++){const f=k/m,b=Math.floor(2*Math.pow(186,f)),b2=Math.max(b+1,Math.floor(2*Math.pow(186,(k+1)/m)));let s=0,c=0;for(let i=b;i<b2&&i<fq.length;i++){s+=fq[i];c++}
@@ -623,7 +714,7 @@ function drawViz(t){
 }
 
 /* ───────── clock & weather ───────── */
-function tickClock(){
+function tickClock(){tickExtras();
   if(!cfg.clock.show)return;const d=new Date(),C=cfg.clock;
   $('#clkT').textContent=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:C.seconds?'2-digit':undefined,hour12:!C.h24});
   $('#clkD').textContent=C.date?d.toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'}):'';
@@ -632,7 +723,7 @@ setInterval(tickClock,1000);
 const WX=c=>c===0?['☀️','Clear']:c<=2?['⛅','Partly cloudy']:c===3?['☁️','Overcast']:c<=48?['🌫️','Fog']:c<=57?['🌦️','Drizzle']:c<=67?['🌧️','Rain']:c<=77?['❄️','Snow']:c<=82?['🌧️','Showers']:c<=86?['🌨️','Snow showers']:['⛈️','Thunderstorm'];
 let wxT=null;
 async function loadWeather(){
-  clearTimeout(wxT);if(!cfg.weather.show)return;const Wc=cfg.weather;
+  clearTimeout(wxT);if(!cfg.weather.show&&!cfg.fcast.show)return;const Wc=cfg.weather;
   try{
     let lat,lon,name='';
     if(Wc.city.trim()){const key='aura.geo.'+Wc.city.trim().toLowerCase();let g=store.get(key,null);
@@ -640,12 +731,97 @@ async function loadWeather(){
       ({lat,lon,name}=g)}
     else if(Wc.useLocation){const p=await new Promise((a,b)=>navigator.geolocation.getCurrentPosition(a,b,{timeout:9000}));lat=p.coords.latitude;lon=p.coords.longitude}
     else{$('#wIcon').textContent='🌍';$('#wTemp').textContent='—';$('#wDesc').textContent='Set a city in Settings';return}
-    const j=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&temperature_unit=${Wc.units==='f'?'fahrenheit':'celsius'}`)).json();
-    const[ic,ds]=WX(j.current.weather_code);$('#wIcon').textContent=ic;$('#wTemp').textContent=Math.round(j.current.temperature_2m)+'°'+(Wc.units==='f'?'F':'C');$('#wDesc').textContent=ds+(name?' · '+name:'');
+    const j=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=6&timezone=auto&temperature_unit=${Wc.units==='f'?'fahrenheit':'celsius'}`)).json();
+    const[ic,ds]=WX(j.current.weather_code);$('#wIcon').textContent=ic;$('#wTemp').textContent=Math.round(j.current.temperature_2m)+'°'+(Wc.units==='f'?'F':'C');$('#wDesc').textContent=ds+(name?' · '+name:'');wxDaily=j.daily||null;renderFcast();
   }catch(e){$('#wIcon').textContent='🌍';$('#wTemp').textContent='—';$('#wDesc').textContent='Weather unavailable'}
   wxT=setTimeout(loadWeather,15*60*1000);
 }
 const loadWeatherSoon=(()=>{let t;return()=>{clearTimeout(t);t=setTimeout(loadWeather,700)}})();
+
+/* ───────── extra elements ───────── */
+let wxDaily=null,calKey='',sleepEnd=0,sleepIdx=0;const SLEEP_STEPS=[0,15,30,60,90];
+function applyExtras(){
+  const r=document.documentElement.style;
+  r.setProperty('--cover',cfg.cover.size+'px');r.setProperty('--cradius',cfg.cover.radius);r.setProperty('--gsize',cfg.greet.size+'px');r.setProperty('--wcsize',cfg.wclk.size+'px');
+  $('#cover').classList.toggle('sh',cfg.cover.shadow);
+  const X=cfg.text,tx=$('#txtW');tx.style.cssText=`font-size:${X.size}px;font-weight:${X.weight};font-style:${X.italic?'italic':'normal'};opacity:${X.opacity};text-align:${X.align}`;
+  tx.textContent=X.text?X.text.replace(/\\n/g,'\n'):'✎ Add text in Settings';
+  const I=cfg.img,im=$('#imgW');im.style.cssText=`width:${I.size}px;height:${I.size}px;opacity:${I.opacity};border-radius:${I.shape==='circle'?'50%':I.shape==='rounded'?'14%':'0'};object-fit:${I.shape==='logo'?'contain':'cover'}${I.shape==='logo'?';background:none':''}`;
+  if(im._s!==I.src){im._s=I.src;I.src?im.src=I.src:im.removeAttribute('src')}
+  buildAcl();calKey='';renderFcast();
+}
+function buildAcl(){
+  const c=cfg.acl;let s=`<svg viewBox="-100 -100 200 200" width="${c.size}" height="${c.size}"><circle r="97" fill="rgba(0,0,0,${cfg.theme.glass})" stroke="rgba(255,255,255,.2)" stroke-width="1.5"/>`;
+  for(let i=0;i<60;i++){const a=i*Math.PI/30,big=i%5===0,r1=big?79:87;s+=`<line x1="${(Math.sin(a)*r1).toFixed(2)}" y1="${(-Math.cos(a)*r1).toFixed(2)}" x2="${(Math.sin(a)*92).toFixed(2)}" y2="${(-Math.cos(a)*92).toFixed(2)}" stroke="#fff" stroke-opacity="${big?.9:.3}" stroke-width="${big?3:1.2}" stroke-linecap="round"/>`}
+  if(c.numerals)for(let i=1;i<=12;i++){const a=i*Math.PI/6;s+=`<text x="${(Math.sin(a)*64).toFixed(2)}" y="${(-Math.cos(a)*64).toFixed(2)}" fill="#fff" fill-opacity=".85" font-size="17" font-weight="600" text-anchor="middle" dominant-baseline="central" font-family="inherit">${i}</text>`}
+  s+=`<line id="aclH" x1="0" y1="6" x2="0" y2="-46" stroke="#fff" stroke-width="5" stroke-linecap="round"/><line id="aclM" x1="0" y1="8" x2="0" y2="-70" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>`+(c.seconds?`<line id="aclS" x1="0" y1="14" x2="0" y2="-78" style="stroke:var(--accent)" stroke-width="1.8" stroke-linecap="round"/>`:'')+`<circle r="5" style="fill:var(--accent)"/></svg>`;
+  $('#acl').innerHTML=s;
+}
+function drawAcl(){
+  const d=new Date(),sec=d.getSeconds()+d.getMilliseconds()/1000,min=d.getMinutes()+sec/60,hr=(d.getHours()%12)+min/60;
+  const set=(id,deg)=>{const e=document.getElementById(id);if(e)e.setAttribute('transform','rotate('+deg.toFixed(2)+')')};
+  set('aclH',hr*30);set('aclM',min*6);set('aclS',sec*6);
+}
+const sc=$('#specc'),sx=sc.getContext('2d');let prevS=new Float32Array(256);
+function drawSpec(t){
+  const c=cfg.spec,dp=Math.min(window.devicePixelRatio||1,2),W=Math.round(c.w*dp),H=Math.round(c.h*dp);
+  if(sc.width!==W||sc.height!==H){sc.width=W;sc.height=H;sc.style.width=c.w+'px';sc.style.height=c.h+'px'}
+  sx.clearRect(0,0,W,H);const n=c.bars,sp=spectrum(n,t);if(prevS.length<n)prevS=new Float32Array(n);
+  const gw=W/n,bw=Math.max(1,gw*.62);sx.shadowBlur=cfg.viz.glow?10*dp:0;sx.shadowColor=S.acc;
+  for(let k=0;k<n;k++){const a=sp[k],p=prevS[k];prevS[k]=a>p?p+(a-p)*.6:p+(a-p)*(1-cfg.viz.smooth);const v=Math.max(.04,prevS[k]);sx.fillStyle=colorAt(k/n);const x=k*gw+(gw-bw)/2;
+    if(c.mode==='mirror'){const hh=v*H/2;sx.fillRect(x,H/2-hh,bw,hh*2)}else{const hh=v*H;sx.fillRect(x,H-hh,bw,hh)}}
+  sx.shadowBlur=0;
+}
+function tickExtras(){
+  const d=new Date();
+  if(cfg.greet.show){const hr=d.getHours();$('#grT').textContent=(hr<5?'Good night':hr<12?'Good morning':hr<17?'Good afternoon':hr<21?'Good evening':'Good night')+(cfg.greet.name?', '+cfg.greet.name:'');$('#grD').textContent=cfg.greet.date?d.toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'}):''}
+  if(cfg.wclk.show)renderWclk(d);
+  if(cfg.cal.show)renderCal(d);
+  renderTimer();
+  if(sleepEnd&&Date.now()>=sleepEnd)fireSleep();
+}
+function renderWclk(d){
+  const box=$('#wclk'),zs=cfg.wclk.zones.split(',').map(s=>s.trim()).filter(Boolean).slice(0,6),today=d.toLocaleDateString('en-CA');box.textContent='';
+  for(const z of zs){let tm='—',tag='';
+    try{tm=d.toLocaleTimeString([],{timeZone:z,hour:'2-digit',minute:'2-digit',hour12:!cfg.clock.h24});const dz=d.toLocaleDateString('en-CA',{timeZone:z});tag=dz>today?'+1d':dz<today?'−1d':''}catch(e){}
+    const row=h('div','wz'),s=h('span',null,tm);if(tag)s.appendChild(h('em',null,tag));row.append(h('b',null,z.split('/').pop().replace(/_/g,' ')),s);box.appendChild(row)}
+  if(!zs.length)box.appendChild(h('p','note','Add time zones in Settings'));
+}
+function renderCal(d){
+  const key=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()+'-'+cfg.cal.monStart;if(key===calKey)return;calKey=key;
+  $('#calT').textContent=d.toLocaleDateString([],{month:'long',year:'numeric'});
+  const g=$('#calg');g.textContent='';const base=cfg.cal.monStart?1:7;
+  for(let i=0;i<7;i++)g.appendChild(h('div','cd h',new Date(2024,0,base+i).toLocaleDateString([],{weekday:'narrow'})));
+  const off=(new Date(d.getFullYear(),d.getMonth(),1).getDay()-(cfg.cal.monStart?1:0)+7)%7,n=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  for(let i=0;i<off;i++)g.appendChild(h('div','cd'));
+  for(let i=1;i<=n;i++)g.appendChild(h('div','cd'+(i===d.getDate()?' t':''),String(i)));
+}
+function renderFcast(){
+  const b=$('#fcast');b.textContent='';
+  if(!wxDaily){b.appendChild(h('div','note',cfg.weather.city||cfg.weather.useLocation?'Loading forecast…':'Set a city in Settings → Clock & weather'));return}
+  for(let i=0;i<Math.min(cfg.fcast.days,wxDaily.time.length);i++){const dt=new Date(wxDaily.time[i]+'T12:00'),d=h('div','fd');
+    d.append(h('b',null,i===0?'Today':dt.toLocaleDateString([],{weekday:'short'})),h('i',null,WX(wxDaily.weather_code[i])[0]));
+    const s=h('span',null,Math.round(wxDaily.temperature_2m_max[i])+'°');s.appendChild(h('em',null,Math.round(wxDaily.temperature_2m_min[i])+'°'));d.appendChild(s);b.appendChild(d)}
+}
+/* sleep timer */
+function renderTimer(){
+  const t=$('#timer'),txt='☾  '+(sleepEnd?'Sleep in '+fmt(sleepEnd-Date.now()):'Sleep timer off · tap to set');
+  if(t.textContent!==txt)t.textContent=txt;
+}
+function setSleep(m){sleepEnd=m?Date.now()+m*60000:0;sleepIdx=Math.max(0,SLEEP_STEPS.indexOf(m));$('#btnSleep').classList.toggle('on',!!m);toast(m?'Sleep timer: music stops in '+m+' min':'Sleep timer off',2200);renderTimer()}
+function cycleSleep(){if(document.body.classList.contains('editing'))return;setSleep(SLEEP_STEPS[(sleepIdx+1)%SLEEP_STEPS.length])}
+async function fireSleep(){
+  sleepEnd=0;$('#btnSleep').classList.remove('on');sleepIdx=0;renderTimer();toast('Sleep timer — goodnight 🌙',4000);
+  if(!S.playing)return;const v=S.volume;
+  if(cfg.timer.fade){for(let i=9;i>=0;i--){ctl.volume(v*i/10);await sleep(1500)}}
+  if(S.playing)ctl.toggle();
+  if(cfg.timer.fade){await sleep(900);ctl.volume(v)}
+}
+$('#btnSleep').onclick=cycleSleep;$('#timer').onclick=cycleSleep;
+/* lock-screen / hardware media keys */
+function mediaMeta(t){if(!('mediaSession' in navigator))return;try{navigator.mediaSession.metadata=t?new MediaMetadata({title:t.name,artist:t.artists,album:t.album,artwork:t.art?[{src:t.art,sizes:'640x640'}]:[]}):null}catch(e){}}
+(()=>{if(!('mediaSession' in navigator))return;const m=navigator.mediaSession,set=(a,f)=>{try{m.setActionHandler(a,f)}catch(e){}};set('play',()=>{if(!S.playing)ctl.toggle()});set('pause',()=>{if(S.playing)ctl.toggle()});set('nexttrack',()=>ctl.next());set('previoustrack',()=>ctl.prev());set('seekto',e=>{if(e.seekTime!=null)ctl.seek(e.seekTime*1000)})})();
+function readImg(file,max){return new Promise((res,rej)=>{const fr=new FileReader();fr.onerror=rej;fr.onload=()=>{if(/gif|svg/.test(file.type))return res(fr.result);const im=new Image();im.onerror=rej;im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL(file.type==='image/png'?'image/png':'image/jpeg',.88))};im.src=fr.result};fr.readAsDataURL(file)})}
 
 /* ───────── render loop ───────── */
 let lastSec=-1;
@@ -654,7 +830,7 @@ function frame(t){
   const p=pos();
   $('#pFill').style.width=(S.track?clamp(p/(S.track.dur||1),0,1)*100:0)+'%';
   const s=Math.floor(p/1000);if(s!==lastSec){lastSec=s;$('#pCur').textContent=fmt(p)}
-  updateLyrics(p);drawViz(t);
+  updateLyrics(p);drawViz(t);if(cfg.acl.show)drawAcl();if(cfg.spec.show)drawSpec(t);
 }
 
 /* ───────── library / devices panel ───────── */
@@ -730,12 +906,17 @@ function buildLibrary(){
 async function buildDevices(){
   pbody.textContent='';
   if(mode!=='spotify'){pbody.appendChild(h('p','note','Connect Spotify first.'));return}
-  pbody.appendChild(h('p','note',IOS?'On iPad, audio plays through the Spotify app. Open Spotify on this iPad once (play any song), then pick “iPad” here.':'Choose where the music plays.'));
+  const bc=h('div','dev'+(sdkState==='ready'&&S.devId===sdkDev?' on':'')),bw=h('div');
+  bw.append(h('b',null,'This browser (no Spotify app needed)'),h('span',null,({off:'Off',loading:'Starting…',ready:'Ready — audio plays right here',failed:'Unavailable'})[sdkState]+(sdkState==='failed'&&sdkMsg?' · '+sdkMsg:'')));bc.appendChild(bw);
+  const bb=h('button','btn',sdkState==='ready'?'Play here':sdkState==='loading'?'…':'Enable');bb.style.marginLeft='auto';
+  bb.onclick=async()=>{if(sdkState==='ready'){cfg.ui.device=sdkDev;save();try{await api('/me/player',{method:'PUT',body:JSON.stringify({device_ids:[sdkDev],play:!!S.playing})});S.devId=sdkDev;toast('Playing in this browser',2000);pollSoon()}catch(e){toast(e.message)}buildDevices()}else if(sdkState!=='loading'){cfg.ui.browserPlayer=true;save();startSdk()}};
+  bc.appendChild(bb);pbody.appendChild(bc);
+  pbody.appendChild(h('p','note','Other devices on your Spotify account:'));
   const list=h('div');pbody.appendChild(list);list.appendChild(h('p','note','Looking for devices…'));
   const rf=h('button','btn','Refresh');rf.onclick=buildDevices;
   try{const ds=await getDevices();list.textContent='';
     if(!ds.length)list.appendChild(h('p','note','No devices found. Open the Spotify app on this iPad / phone / computer, play a song, then press Refresh.'));
-    ds.forEach(d=>{const b=h('button','dev'+(d.is_active||d.id===cfg.ui.device?' on':''));const w=h('div');w.append(h('b',null,d.name),h('span',null,d.type+(d.is_active?' · playing here':'')));b.appendChild(w);
+    ds.filter(d=>d.id!==sdkDev&&d.name!=='AURA Display'&&d.name!=='NEEDLE Display').forEach(d=>{const b=h('button','dev'+(d.is_active||d.id===cfg.ui.device?' on':''));const w=h('div');w.append(h('b',null,d.name),h('span',null,d.type+(d.is_active?' · playing here':'')));b.appendChild(w);
       b.onclick=async()=>{cfg.ui.device=d.id;save();try{await api('/me/player',{method:'PUT',body:JSON.stringify({device_ids:[d.id],play:!!S.playing})});toast('Playing on '+d.name,2200);pollSoon()}catch(e){toast(e.message)}buildDevices()};list.appendChild(b)})}
   catch(e){list.textContent='';list.appendChild(h('p','note','Couldn’t load devices ('+e.message+')'))}
   const r=h('div','row');r.appendChild(rf);pbody.appendChild(r);
@@ -745,6 +926,8 @@ async function buildDevices(){
 const opt=a=>a.map(x=>Array.isArray(x)?x:[x,x]);
 const SCHEMA=[
  {t:'Connection',open:true,items:[
+  {k:'greet.name',l:'Your name',type:'text'},
+  {type:'note',l:'Used by the Greeting element. Filled in from your Spotify profile when you sign in; change it any time.'},
   {k:'clientId',l:'Spotify Client ID',type:'text'},
   {type:'custom',build(){const w=document.createElement('div');w.innerHTML=`<p class="note">Redirect URI to register in the Spotify dashboard (must match exactly):<br><span class="code">${redirectUri()}</span></p>`;const r=document.createElement('div');r.className='row';
      const mk=(t,f,c)=>{const b=document.createElement('button');b.className='btn '+(c||'');b.textContent=t;b.onclick=f;return b};
@@ -790,12 +973,29 @@ const SCHEMA=[
  {t:'Clock & weather',items:[
   {k:'clock.show',l:'Show clock',type:'toggle'},{k:'clock.h24',l:'24-hour',type:'toggle'},{k:'clock.seconds',l:'Seconds',type:'toggle'},{k:'clock.date',l:'Date',type:'toggle'},{k:'clock.size',l:'Clock size',type:'range',min:20,max:120,step:1,u:'px'},
   {k:'weather.show',l:'Show weather',type:'toggle'},{k:'weather.city',l:'City',type:'text'},{k:'weather.useLocation',l:'…or use my location',type:'toggle'},{k:'weather.units',l:'Units',type:'select',o:[['c','°C'],['f','°F']]}]},
+ {t:'Add elements',open:true,items:[
+  {type:'btn',l:'Add / remove elements on screen…',fn:()=>{closePanel();setEdit(true)}},
+  {type:'note',l:'Switch elements on here, then open Layout mode (grid-arrows button) to drag, pinch-resize or remove them.'},
+  {k:'acl.show',l:'Analog clock',type:'toggle'},{k:'greet.show',l:'Greeting',type:'toggle'},{k:'text.show',l:'Custom text',type:'toggle'},{k:'img.show',l:'Image / logo / GIF',type:'toggle'},{k:'spec.show',l:'Spectrum bars',type:'toggle'},
+  {k:'cover.show',l:'Square album cover',type:'toggle'},{k:'fcast.show',l:'Weather forecast',type:'toggle'},{k:'wclk.show',l:'World clock',type:'toggle'},{k:'cal.show',l:'Calendar',type:'toggle'},{k:'timer.show',l:'Sleep timer',type:'toggle'}]},
+ {t:'Element options',items:[
+  {type:'note',l:'Analog clock'},{k:'acl.size',l:'Size',type:'range',min:80,max:400,step:2,u:'px'},{k:'acl.seconds',l:'Second hand',type:'toggle'},{k:'acl.numerals',l:'Numbers',type:'toggle'},
+  {type:'note',l:'Greeting'},{k:'greet.name',l:'Your name',type:'text'},{k:'greet.size',l:'Size',type:'range',min:16,max:90,step:1,u:'px'},{k:'greet.date',l:'Show date',type:'toggle'},
+  {type:'note',l:'Custom text (use \\n for a new line)'},{k:'text.text',l:'Text',type:'text'},{k:'text.size',l:'Size',type:'range',min:12,max:160,step:1,u:'px'},{k:'text.weight',l:'Weight',type:'select',num:true,o:[300,500,700,800]},{k:'text.italic',l:'Italic',type:'toggle'},{k:'text.opacity',l:'Opacity',type:'range',min:.1,max:1,step:.05},{k:'text.align',l:'Align',type:'select',o:[['left','Left'],['center','Center'],['right','Right']]},
+  {type:'note',l:'Image / logo / GIF'},{k:'img.src',l:'Image URL',type:'text'},{type:'file',k:'img.src',l:'…or upload image'},{k:'img.size',l:'Size',type:'range',min:60,max:600,step:2,u:'px'},{k:'img.shape',l:'Shape',type:'select',o:[['rounded','Rounded'],['circle','Circle'],['square','Square'],['logo','Logo (no crop)']]},{k:'img.opacity',l:'Opacity',type:'range',min:.1,max:1,step:.05},
+  {type:'note',l:'Spectrum bars'},{k:'spec.w',l:'Width',type:'range',min:120,max:1000,step:5,u:'px'},{k:'spec.h',l:'Height',type:'range',min:20,max:300,step:2,u:'px'},{k:'spec.bars',l:'Bars',type:'range',min:12,max:120,step:2},{k:'spec.mode',l:'Style',type:'select',o:[['bars','Bars from bottom'],['mirror','Mirrored']]},
+  {type:'note',l:'Square album cover'},{k:'cover.size',l:'Size',type:'range',min:80,max:500,step:2,u:'px'},{k:'cover.radius',l:'Corner radius',type:'range',min:0,max:120,step:1,u:'px'},{k:'cover.shadow',l:'Shadow',type:'toggle'},
+  {type:'note',l:'Forecast uses the city / location from “Clock & weather”.'},{k:'fcast.days',l:'Days',type:'range',min:2,max:6,step:1},
+  {type:'note',l:'World clock — comma-separated time zones, e.g. Asia/Tokyo, Europe/Paris'},{k:'wclk.zones',l:'Zones',type:'text'},{k:'wclk.size',l:'Time size',type:'range',min:12,max:48,step:1,u:'px'},
+  {k:'cal.monStart',l:'Calendar week starts Monday',type:'toggle'},
+  {type:'custom',build(){const r=document.createElement('div');r.className='row';const l=document.createElement('label');l.textContent='Sleep in';r.appendChild(l);[0,15,30,60,90].forEach(m=>{const b=document.createElement('button');b.className='btn';b.textContent=m?m+'m':'Off';b.style.marginLeft='4px';b.onclick=()=>setSleep(m);r.appendChild(b)});return r}},
+  {k:'timer.fade',l:'Fade volume out before stopping',type:'toggle'}]},
  {t:'Behavior',items:[
   {k:'ui.autoHide',l:'Auto-hide controls',type:'toggle'},{k:'ui.idleSecs',l:'Hide after',type:'range',min:2,max:30,step:1,u:'s'},
   {k:'ui.pollMs',l:'Refresh interval',type:'range',min:800,max:5000,step:100,u:'ms'},
   {k:'ui.wakeLock',l:'Keep screen awake',type:'toggle'},
-  {k:'ui.playInBrowser',l:'Play in this browser (desktop only)',type:'toggle'},
-  {type:'note',l:'Desktop only: turns this page into a Spotify speaker. On iPad/iPhone Safari this can’t work (Spotify audio is blocked), so use the Spotify app as the speaker via the Devices button.'}]},
+  {k:'ui.browserPlayer',l:'Play audio in this browser',type:'toggle'},
+  {type:'note',l:'Turns this page into its own Spotify speaker — no Spotify app needed (Premium required). Works in desktop Chrome, Edge, Firefox and Safari. iPad/iPhone browsers may refuse it; AURA then falls back to the Spotify app automatically.'}]},
  {t:'Data',items:[
   {type:'btn',l:'Export settings',fn:exportCfg},{type:'importbtn'},
   {type:'btn',l:'Reset everything',fn:()=>{if(confirm('Reset all settings?')){const id=cfg.clientId;cfg=merge(DEFAULTS,{clientId:id});save();apply();buildSettings()}}}]}
@@ -803,8 +1003,8 @@ const SCHEMA=[
 function row(label,ctrl,val){const r=document.createElement('div');r.className='row';const l=document.createElement('label');l.textContent=label;r.append(l,ctrl);if(val)r.appendChild(val);return r}
 function onChange(k){save();apply();
   if(k==='viz.source'){cfg.viz.source==='sim'?stopAudio():startAudio(cfg.viz.source)}
-  if(k.startsWith('weather.')||k==='weather')loadWeatherSoon();
-  if(k==='ui.playInBrowser')cfg.ui.playInBrowser?startSdk():stopSdk();
+  if(k.startsWith('weather.')||k==='weather'||k==='fcast.show'||k==='fcast.days')loadWeatherSoon();
+  if(k==='ui.browserPlayer')cfg.ui.browserPlayer?startSdk():stopSdk();
   if(k==='ui.wakeLock')wake();
   if(k==='clientId')$('#wClient').value=cfg.clientId}
 function buildSettings(){
@@ -816,7 +1016,7 @@ function buildSettings(){
       if(it.type==='btn'){const r=document.createElement('div');r.className='row';const b=document.createElement('button');b.className='btn';b.textContent=it.l;b.onclick=it.fn;r.appendChild(b);d.appendChild(r);continue}
       if(it.type==='importbtn'){const r=document.createElement('div');r.className='row';const b=document.createElement('button');b.className='btn';b.textContent='Import settings';const f=document.createElement('input');f.type='file';f.accept='.json';f.hidden=true;
         f.onchange=async()=>{try{cfg=merge(DEFAULTS,JSON.parse(await f.files[0].text()));save();apply();buildSettings();toast('Settings imported')}catch(e){toast('Invalid settings file')}};b.onclick=()=>f.click();r.append(b,f);d.appendChild(r);continue}
-      if(it.type==='file'){const f=document.createElement('input');f.type='file';f.accept='image/*';f.onchange=()=>{const fr=new FileReader();fr.onload=()=>{setP(cfg,it.k,fr.result);cfg.bg.mode='image';if(!save())toast('Image too large to save — use a URL instead');apply();buildSettings()};fr.readAsDataURL(f.files[0])};d.appendChild(row(it.l,f));continue}
+      if(it.type==='file'){const f=document.createElement('input');f.type='file';f.accept='image/*';f.onchange=async()=>{const file=f.files[0];if(!file)return;try{const url=await readImg(file,it.k==='img.src'?700:1920);setP(cfg,it.k,url);if(it.k==='bg.image')cfg.bg.mode='image';if(!save())toast('Image too large to save — use a URL instead');apply();buildSettings()}catch(e){toast('Couldn’t read that image')}};d.appendChild(row(it.l,f));continue}
       const v=getP(cfg,it.k);let c,val=null;
       if(it.type==='toggle'){c=document.createElement('span');c.className='sw';c.innerHTML='<input type="checkbox"><i></i>';const i=c.firstChild;i.checked=!!v;i.onchange=()=>{setP(cfg,it.k,i.checked);onChange(it.k)}}
       else if(it.type==='range'){c=document.createElement('input');c.type='range';c.min=it.min;c.max=it.max;c.step=it.step;c.value=v;val=document.createElement('span');val.className='val';const sh=x=>val.textContent=(+x).toFixed(it.step<1?2:0).replace(/\.?0+$/,'')+(it.u||'');sh(v);c.oninput=()=>{setP(cfg,it.k,+c.value);sh(c.value);onChange(it.k)}}
@@ -830,17 +1030,35 @@ function buildSettings(){
   if(!$('#fontlist')){const dl=document.createElement('datalist');dl.id='fontlist';dl.innerHTML=FONTS.map(f=>`<option value="${f}">`).join('');document.body.appendChild(dl)}
 }
 function exportCfg(){const c=JSON.parse(JSON.stringify(cfg));delete c.clientId;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(c,null,2)],{type:'application/json'}));a.download='aura-settings.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
-function applyPreset(k){const p=PRESETS[k];if(!p)return;for(const w of WIDGETS){const[x,y,s]=p.pos[w];cfg.widgets[w]={x,y,s}}
+function applyPreset(k){const p=PRESETS[k];if(!p)return;for(const w of WIDGETS){const[x,y,s]=p.pos[w]||EXTRA_POS[w];cfg.widgets[w]={x,y,s};if(!p.pos[w])cfg[w].show=false}
   cfg.lyrics.show=!!p.show.lyrics;cfg.queue.show=!!p.show.queue;cfg.clock.show=!!p.show.clock;cfg.weather.show=!!p.show.weather;cfg.info.show=!!p.show.info;
   if(k!=='poster'){cfg.art.shape=cfg.art.shape==='rounded'?'circle':cfg.art.shape;if(cfg.viz.style==='off')cfg.viz.style='radial';cfg.lyrics.align='left'}
   for(const[kk,v]of Object.entries(p.set||{}))setP(cfg,kk,v);save();apply();loadWeatherSoon()}
 
 /* ───────── layout edit ───────── */
-function setEdit(on){document.body.classList.toggle('editing',on);$('#tbEdit').classList.toggle('active',on);if(on)toast('Layout mode: drag to move, scroll to resize. Press E when done.',5000);else save()}
-let drag=null;
-$('#stage').addEventListener('pointerdown',e=>{if(!document.body.classList.contains('editing'))return;const w=e.target.closest('.w');if(!w)return;w.setPointerCapture(e.pointerId);const id=w.dataset.w;drag={id,w,sx:e.clientX,sy:e.clientY,ox:cfg.widgets[id].x,oy:cfg.widgets[id].y};w.style.cursor='grabbing'});
-addEventListener('pointermove',e=>{if(!drag)return;const p=cfg.widgets[drag.id];p.x=clamp(drag.ox+(e.clientX-drag.sx)/innerWidth*100,0,100);p.y=clamp(drag.oy+(e.clientY-drag.sy)/innerHeight*100,0,100);drag.w.style.setProperty('--x',p.x);drag.w.style.setProperty('--y',p.y)});
-addEventListener('pointerup',()=>{if(drag){drag.w.style.cursor='';drag=null;save()}});
+let selW=null;
+function selectW(id){selW=id;for(const w of WIDGETS)W[w].classList.toggle('sel',w===id);$('#selName').textContent=id?W[id].dataset.label:'Tap an element to select it';$$('.chip',$('#chips')).forEach(c=>c.classList.toggle('cur',c.dataset.c===id))}
+function buildTray(){const c=$('#chips');c.textContent='';
+  for(const id of WIDGETS){const b=h('button','chip'+(visible(id)?' on':''),W[id].dataset.label);b.dataset.c=id;
+    b.onclick=()=>{const on=!visible(id);(id==='disc'?cfg.art:cfg[id]).show=on;save();apply();buildTray();if(on){selectW(id);toast(W[id].dataset.label+' added — drag it into place',2500);if(id==='fcast')loadWeatherSoon()}else if(selW===id)selectW(null)};c.appendChild(b)}
+  selectW(selW&&visible(selW)?selW:null)}
+function setEdit(on){document.body.classList.toggle('editing',on);$('#tbEdit').classList.toggle('active',on);
+  if(on){buildTray();toast('Layout mode: drag to move · pinch or − ＋ to resize · tap the chips to add or remove elements',6000)}else{selectW(null);save()}}
+function nudge(f){if(!selW)return;const p=cfg.widgets[selW];p.s=clamp(p.s*f,.25,4);W[selW].style.setProperty('--s',p.s);save()}
+$('#trPlus').onclick=()=>nudge(1.1);$('#trMinus').onclick=()=>nudge(1/1.1);$('#trDone').onclick=()=>setEdit(false);
+$('#trReset').onclick=()=>{if(!selW)return;cfg.widgets[selW]={...DEFAULTS.widgets[selW]};apply();save()};
+const ptr=new Map();let drag=null,pinch=null;
+const pdist=()=>{const a=[...ptr.values()];return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)||1};
+$('#stage').addEventListener('pointerdown',e=>{if(!document.body.classList.contains('editing'))return;const w=e.target.closest('.w');if(!w)return;
+  const id=w.dataset.w;try{w.setPointerCapture(e.pointerId)}catch(_){}
+  ptr.set(e.pointerId,{x:e.clientX,y:e.clientY,id});selectW(id);
+  if([...ptr.values()].filter(p=>p.id===id).length>=2){drag=null;pinch={id,w,d0:pdist(),s0:cfg.widgets[id].s}}
+  else{drag={id,w,pid:e.pointerId,sx:e.clientX,sy:e.clientY,ox:cfg.widgets[id].x,oy:cfg.widgets[id].y};w.style.cursor='grabbing'}});
+addEventListener('pointermove',e=>{const q=ptr.get(e.pointerId);if(q){q.x=e.clientX;q.y=e.clientY}
+  if(pinch&&ptr.size>=2){const s=clamp(pinch.s0*pdist()/pinch.d0,.25,4);cfg.widgets[pinch.id].s=s;pinch.w.style.setProperty('--s',s);return}
+  if(!drag||e.pointerId!==drag.pid)return;const p=cfg.widgets[drag.id];p.x=clamp(drag.ox+(e.clientX-drag.sx)/innerWidth*100,0,100);p.y=clamp(drag.oy+(e.clientY-drag.sy)/innerHeight*100,0,100);drag.w.style.setProperty('--x',p.x);drag.w.style.setProperty('--y',p.y)});
+const endP=e=>{ptr.delete(e.pointerId);if(pinch&&ptr.size<2){pinch=null;save()}if(drag&&e.pointerId===drag.pid){drag.w.style.cursor='';drag=null;save()}};
+addEventListener('pointerup',endP);addEventListener('pointercancel',endP);
 addEventListener('wheel',e=>{if(!document.body.classList.contains('editing'))return;const w=e.target.closest?.('.w');if(!w)return;e.preventDefault();const p=cfg.widgets[w.dataset.w];p.s=clamp(p.s*Math.exp(-e.deltaY*.0012),.25,4);w.style.setProperty('--s',p.s);save()},{passive:false});
 
 /* ───────── wiring ───────── */
@@ -869,17 +1087,17 @@ $('#wClient').oninput=e=>{cfg.clientId=e.target.value.trim();save()};
 $('#wConnect').onclick=login;$('#wDemo').onclick=()=>startDemo();
 $('#wCopy').onclick=()=>{navigator.clipboard?.writeText(redirectUri()).then(()=>toast('Redirect URI copied'),()=>toast('Copy it manually'))};
 function startDemo(){mode='demo';$('#welcome').classList.remove('show');demo.pos=0;demo.at=performance.now();demo.playing=true;S.track=null;demoTick();loadQueue();clearInterval(startDemo.t);startDemo.t=setInterval(demoTick,300);if(panelKind==='settings')buildSettings()}
-function startSpotify(){mode='spotify';clearInterval(startDemo.t);$('#welcome').classList.remove('show');pollLoop();if(cfg.ui.playInBrowser)startSdk();wake()}
+async function fillName(){if(cfg.greet.name)return;try{const me=await api('/me');if(me?.display_name&&!cfg.greet.name){cfg.greet.name=me.display_name.split(' ')[0];save();tickExtras();if(panelKind==='settings')buildSettings()}}catch(e){}}
+function startSpotify(){mode='spotify';fillName();clearInterval(startDemo.t);$('#welcome').classList.remove('show');pollLoop();startSdk();wake()}
 
 /* boot */
 (async()=>{
-  if(IOS&&cfg.ui.playInBrowser){cfg.ui.playInBrowser=false;save()}
   apply();wakeUI();requestAnimationFrame(frame);loadWeather();
   if(await handleCallback())startSpotify();
   else if(tok&&cfg.clientId)startSpotify();
   else showWelcome();
   if(location.hash==='#demo')startDemo();
-  window.__aura={cfg:()=>cfg,startDemo,applyPreset,setEdit,openPanel,S:()=>S};
+  window.__aura={apply,cfg:()=>cfg,startDemo,applyPreset,setEdit,openPanel,S:()=>S};
 })();
 })();
 </script>
