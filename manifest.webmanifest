@@ -1,6 +1,6 @@
 {
-  "name": "Cadence — Vinyl Player & Study Tracker",
-  "short_name": "Cadence",
+  "name": "AURA — Vinyl Player & Study Tracker",
+  "short_name": "AURA",
   "description": "A full-screen vinyl now-playing display for Spotify with a built-in NEET study tracker.",
   "start_url": "./",
   "scope": "./",

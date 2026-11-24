@@ -1,4 +1,4 @@
-# Aura
+# AURA
 
 Full-screen Spotify vinyl player + built-in NEET study tracker.
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cadence</title>
+<title>AURA</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Cadence">
+<meta name="apple-mobile-web-app-title" content="AURA">
 <style>
 :root{
   --accent:#ff5a3c; --accent2:#ffb03c; --text:#fff;
@@ -280,8 +280,8 @@ textarea.sx-in{resize:vertical;min-height:84px}
 </div>
 
 <div id="welcome"><div class="wcard">
-  <img src="icons/icon.svg" alt="" width="64" height="64" style="display:block;border-radius:16px;margin-bottom:14px"><h1>Cadence<em>.</em></h1>
-  <p>A full-screen vinyl now-playing display for Spotify. Sign in once and Cadence plays the music right here in the browser — no Spotify app needed (Spotify Premium required).</p>
+  <img src="icons/icon.svg" alt="" width="64" height="64" style="display:block;border-radius:16px;margin-bottom:14px"><h1>AURA<em>.</em></h1>
+  <p>A full-screen vinyl now-playing display for Spotify. Sign in once and AURA plays the music right here in the browser — no Spotify app needed (Spotify Premium required).</p>
   <ol>
     <li>Open <b>developer.spotify.com/dashboard</b> → <b>Create app</b> and tick both <b>“Web API”</b> and <b>“Web Playback SDK”</b>.</li>
     <li>Add this exact Redirect URI: <span class="code" id="wRedirect"></span></li>
@@ -344,7 +344,7 @@ const PRESETS={
   poster:{label:'Poster (big square art)',pos:{disc:[50,43,1.7],info:[50,88,1],lyrics:[19,42,1],queue:[15,80,1],clock:[90,15,1],weather:[11,94,1]},show:{lyrics:0,queue:0,clock:1,weather:0,info:1},set:{'art.shape':'rounded','art.spin':false,'viz.style':'off'}}
 };
 const DEFAULTS={
-  clientId:'599e9eb44fcf4a729e8ad3d5afdd7f10',
+  clientId:'08396d14ba9a499bbbcb67733b1f46a2',
   theme:{accentMode:'auto',accent:'#ff5a3c',text:'#ffffff',font:'Inter',lyricsFont:'Inter',glass:.35,blur:18},
   bg:{mode:'art',color:'#05060a',image:'',video:'',blur:60,dim:.5,vignette:.55},
   art:{show:true,shape:'record',size:300,spin:true,spinSpeed:20,glow:true},
@@ -371,7 +371,7 @@ const DEFAULTS={
 DEFAULTS.widgets=Object.fromEntries(WIDGETS.map(w=>{const q=PRESETS.orbit.pos[w]||EXTRA_POS[w];return[w,{x:q[0],y:q[1],s:q[2]}]}));
 const _old=store.get('aura.cfg',{})||{};
 let cfg=merge(DEFAULTS,store.get('needle.cfg',null)||{clientId:_old.clientId||DEFAULTS.clientId});
-if(!cfg.clientId||cfg.clientId==='08396d14ba9a499bbbcb67733b1f46a2')cfg.clientId=DEFAULTS.clientId;
+if(!cfg.clientId||cfg.clientId==='599e9eb44fcf4a729e8ad3d5afdd7f10')cfg.clientId=DEFAULTS.clientId;
 const save=()=>store.set('needle.cfg',cfg);
 const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 
@@ -406,7 +406,7 @@ function apply(){
   const L=$('#lyr');L.classList.toggle('up',cfg.lyrics.upper);L.dataset.align=cfg.lyrics.align;
   $('#lyrics').style.textAlign=cfg.lyrics.align;
   sizeViz();updateAccent();applyBg();renderLyrics(true);renderQueue();applyExtras();tickClock();
-  document.title=S.track?`${S.track.name} · ${S.track.artists}`:'Cadence';
+  document.title=S.track?`${S.track.name} · ${S.track.artists}`:'AURA';
 }
 /* background */
 let bgFlip=false;
@@ -491,7 +491,7 @@ function setTrack(t){
   $('#tAlbum').textContent=t?t.album:'';
   $('#pDur').textContent=fmt(t?.dur||0);
   $('#artimg').src=t?.art||'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';$('#coverimg').src=t?.art||'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';mediaMeta(t);
-  document.title=t?`${t.name} · ${t.artists}`:'Cadence';
+  document.title=t?`${t.name} · ${t.artists}`:'AURA';
   if(t?.art)extractColor(t.art).then(c=>{if(S.track?.art===t.art){S.autoAccent=c;updateAccent()}});else{S.autoAccent=null;updateAccent()}
   applyBg();loadLyrics(t);loadQueue();
 }
@@ -619,7 +619,7 @@ function startSdk(){
   sdkTimer=setTimeout(()=>{if(sdkState==='loading')sdkFail(IOS?'This iPad/iPhone browser won’t start Spotify’s web player (Apple blocks it). Using the Spotify app instead.':'The browser player didn’t start. Make sure protected content (DRM) is allowed in this browser and the account is Spotify Premium.')},15000);
   const init=()=>{
     if(sdk)return;
-    sdk=new Spotify.Player({name:'Cadence Display',getOAuthToken:cb=>ensureToken().then(t=>cb(t.access),()=>{}),volume:S.volume/100});
+    sdk=new Spotify.Player({name:'AURA Display',getOAuthToken:cb=>ensureToken().then(t=>cb(t.access),()=>{}),volume:S.volume/100});
     sdk.addListener('ready',async({device_id})=>{
       clearTimeout(sdkTimer);sdkDev=device_id;sdkSet('ready');cfg.ui.device=device_id;save();
       try{sdk.activateElement()}catch(e){}
@@ -976,7 +976,7 @@ async function buildDevices(){
   const rf=h('button','btn','Refresh');rf.onclick=buildDevices;
   try{const ds=await getDevices();list.textContent='';
     if(!ds.length)list.appendChild(h('p','note','No devices found. Open the Spotify app on this iPad / phone / computer, play a song, then press Refresh.'));
-    ds.filter(d=>d.id!==sdkDev&&d.name!=='Cadence Display'&&d.name!=='NEEDLE Display').forEach(d=>{const b=h('button','dev'+(d.is_active||d.id===cfg.ui.device?' on':''));const w=h('div');w.append(h('b',null,d.name),h('span',null,d.type+(d.is_active?' · playing here':'')));b.appendChild(w);
+    ds.filter(d=>d.id!==sdkDev&&d.name!=='AURA Display'&&d.name!=='NEEDLE Display').forEach(d=>{const b=h('button','dev'+(d.is_active||d.id===cfg.ui.device?' on':''));const w=h('div');w.append(h('b',null,d.name),h('span',null,d.type+(d.is_active?' · playing here':'')));b.appendChild(w);
       b.onclick=async()=>{cfg.ui.device=d.id;save();try{await api('/me/player',{method:'PUT',body:JSON.stringify({device_ids:[d.id],play:!!S.playing})});toast('Playing on '+d.name,2200);pollSoon()}catch(e){toast(e.message)}buildDevices()};list.appendChild(b)})}
   catch(e){list.textContent='';list.appendChild(h('p','note','Couldn’t load devices ('+e.message+')'))}
   const r=h('div','row');r.appendChild(rf);pbody.appendChild(r);
@@ -1061,7 +1061,7 @@ const SCHEMA=[
   {k:'ui.pollMs',l:'Refresh interval',type:'range',min:800,max:5000,step:100,u:'ms'},
   {k:'ui.wakeLock',l:'Keep screen awake',type:'toggle'},
   {k:'ui.browserPlayer',l:'Play audio in this browser',type:'toggle'},
-  {type:'note',l:'Turns this page into its own Spotify speaker — no Spotify app needed (Premium required). Works in desktop Chrome, Edge, Firefox and Safari. iPad/iPhone browsers may refuse it; Cadence then falls back to the Spotify app automatically.'}]},
+  {type:'note',l:'Turns this page into its own Spotify speaker — no Spotify app needed (Premium required). Works in desktop Chrome, Edge, Firefox and Safari. iPad/iPhone browsers may refuse it; AURA then falls back to the Spotify app automatically.'}]},
  {t:'Data',items:[
   {type:'btn',l:'Export settings',fn:exportCfg},{type:'importbtn'},
   {type:'btn',l:'Reset everything',fn:()=>{if(confirm('Reset all settings?')){const id=cfg.clientId;cfg=merge(DEFAULTS,{clientId:id});save();apply();buildSettings()}}}]}
@@ -1095,7 +1095,7 @@ function buildSettings(){
     pbody.appendChild(d)}
   if(!$('#fontlist')){const dl=document.createElement('datalist');dl.id='fontlist';dl.innerHTML=FONTS.map(f=>`<option value="${f}">`).join('');document.body.appendChild(dl)}
 }
-function exportCfg(){const c=JSON.parse(JSON.stringify(cfg));delete c.clientId;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(c,null,2)],{type:'application/json'}));a.download='cadence-settings.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+function exportCfg(){const c=JSON.parse(JSON.stringify(cfg));delete c.clientId;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(c,null,2)],{type:'application/json'}));a.download='aura-settings.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 function applyPreset(k){const p=PRESETS[k];if(!p)return;for(const w of WIDGETS){const[x,y,s]=p.pos[w]||EXTRA_POS[w];cfg.widgets[w]={x,y,s};if(!p.pos[w])cfg[w].show=false}
   cfg.lyrics.show=!!p.show.lyrics;cfg.queue.show=!!p.show.queue;cfg.clock.show=!!p.show.clock;cfg.weather.show=!!p.show.weather;cfg.info.show=!!p.show.info;
   if(k!=='poster'){cfg.art.shape=cfg.art.shape==='rounded'?'circle':cfg.art.shape;if(cfg.viz.style==='off')cfg.viz.style='radial';cfg.lyrics.align='left'}
