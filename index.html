@@ -353,7 +353,7 @@ const DEFAULTS={
   bg:{mode:'art',color:'#05060a',image:'',video:'',blur:60,dim:.5,vignette:.55},
   art:{show:true,shape:'record',size:300,spin:true,spinSpeed:20,glow:true},
   viz:{style:'radial',source:'sim',bars:96,thickness:3,gap:14,length:.45,sensitivity:1.2,smooth:.7,color:'accent',custom:'#ffffff',glow:true,rotation:0,spinSpeed:0,mirror:true},
-  lyrics:{show:true,mode:'focus',lines:3,size:40,align:'left',offset:0,upper:true,hideMissing:false,starWords:16,starLinks:true,starGlow:true,starDrift:true},
+  lyrics:{show:true,mode:'focus',lines:3,size:40,align:'left',offset:0,upper:true,hideMissing:false,starWords:12,starLinks:true,starGlow:true,starDrift:true},
   queue:{show:true,count:4},
   info:{show:true,titleSize:30,album:true,progress:true,barStyle:'solid'},
   clock:{show:true,h24:true,seconds:false,date:true,size:44},
@@ -743,23 +743,23 @@ function buildCons(sig){
   for(const r of rows){
     if(!cur||(cur.words.length&&cur.words.length+r.words.length>max&&cur.words.length>=max*.5)||r.t-lastEnd>9000){cur={words:[]};pages.push(cur)}
     cur.words.push(...r.words);lastEnd=r.words[r.words.length-1].t}
-  const seed=hashStr(String(lyr.id||'x')),minX=.1*asp,maxX=.9*asp,minY=.2,maxY=.8,words=[];
+  const seed=hashStr(String(lyr.id||'x')),minX=.08*asp,maxX=.84*asp,minY=.16,maxY=.72,words=[];
   pages.forEach((pg,pi)=>{
     const R=mulberry(seed+pi*977),pts=pg.words;
     pts.forEach((w,k)=>{w.page=pi;w.k=k;w.links=[];
-      if(k===0){w.x=asp/2+(R()-.5)*asp*.5;w.y=.5+(R()-.5)*.3}
+      if(k===0){w.x=asp/2+(R()-.5)*asp*.4;w.y=.44+(R()-.5)*.24}
       else{const pr=pts[k-1];let best=null,bs=-1;
         for(let c=0;c<30;c++){const a=R()*6.2832,r=.09+R()*.2;
           const x=Math.min(maxX,Math.max(minX,pr.x+Math.cos(a)*r*(asp>1?1:1.1))),y=Math.min(maxY,Math.max(minY,pr.y+Math.sin(a)*r));
           let md=9;for(let q=0;q<k;q++)md=Math.min(md,Math.hypot(pts[q].x-x,pts[q].y-y));
-          const sc=md-.18*Math.hypot(x-asp/2,y-.5);if(sc>bs){bs=sc;best={x,y}}}
+          const sc=md-.18*Math.hypot(x-asp/2,y-.44);if(sc>bs){bs=sc;best={x,y}}}
         w.x=best.x;w.y=best.y;w.links.push(k-1);
         if(cfg.lyrics.starLinks&&k>=3&&R()<.45){let bj=-1,bd=.38;for(let q=0;q<k-2;q++){const d=Math.hypot(pts[q].x-w.x,pts[q].y-w.y);if(d<bd){bd=d;bj=q}}if(bj>=0)w.links.push(bj)}}
       words.push(w)});
     pg.start=pts[0].t;pg.end=pts[pts.length-1].t});
   cons={for:lyr,sig,words,pages,amb:(()=>{const R=mulberry(seed^0xA5A5);return Array.from({length:90},()=>({x:R(),y:R(),r:.4+R()*1.1,ph:R()*6.28,par:.15+R()*.7}))})()};
 }
-function spark(x,y,r){cx.beginPath();cx.moveTo(x,y-r);cx.quadraticCurveTo(x,y,x+r,y);cx.quadraticCurveTo(x,y,x,y+r);cx.quadraticCurveTo(x,y,x-r,y);cx.quadraticCurveTo(x,y,x,y-r);cx.closePath()}
+function spark(x,y,r){const q=r*.2;cx.beginPath();cx.moveTo(x,y-r);cx.quadraticCurveTo(x+q,y-q,x+r,y);cx.quadraticCurveTo(x+q,y+q,x,y+r);cx.quadraticCurveTo(x-q,y+q,x-r,y);cx.quadraticCurveTo(x-q,y-q,x,y-r);cx.closePath()}
 const easeO=x=>1-Math.pow(1-x,3);
 function drawCons(t){
   syncStars();if(!cc._on)return;
@@ -783,7 +783,7 @@ function drawCons(t){
   const pg=cons.pages[pi],last=pg.words[pg.words.length-1];let pa=1;
   if(cur===last){const gap=P-last.t;if(gap>3800)pa=Math.max(0,1-(gap-3800)/1400)}
   pgs.push([pi,pa]);
-  const sz=Math.max(18,cfg.lyrics.size*Math.min(1.4,Math.max(.6,H/820))*1.1),up=cfg.lyrics.upper,fam=stack(cfg.theme.lyricsFont),acc=S.acc;
+  const sz=Math.max(18,cfg.lyrics.size*Math.min(1.4,Math.max(.6,H/820))*.82),up=cfg.lyrics.upper,fam=stack(cfg.theme.lyricsFont),acc=S.acc;
   for(const[pn,al]of pgs){if(al<=.01)continue;const page=cons.pages[pn],ws=page.words,old=pn!==pi;
     const vis=[];for(const w of ws){if(w.t>P)break;vis.push(w)}
     /* lines */
@@ -796,18 +796,18 @@ function drawCons(t){
     /* stars + words */
     for(const w of vis){const isCur=!old&&w===cur,age=P-w.t,ap=old?1:easeO(Math.min(1,age/550)),x=w.x*H+px,y=w.y*H+py,rank=old?9:idx-Wd.indexOf(w);
       if(isCur){const pul=1+.12*Math.sin(t/260);
-        cx.globalAlpha=al*.35*(1-ap*.5);cx.strokeStyle=acc;cx.lineWidth=1;cx.beginPath();cx.arc(x,y,6+ap*26,0,6.2832);cx.stroke();
-        cx.globalAlpha=al;cx.fillStyle=acc;cx.shadowColor=acc;cx.shadowBlur=22;spark(x,y,11*ap*pul);cx.fill();cx.shadowBlur=0;
-        cx.fillStyle='#fff';spark(x,y,5*ap);cx.fill()}
-      else{cx.globalAlpha=al*Math.max(.35,.85-rank*.025)*ap;cx.fillStyle='#fff';spark(x,y,3.4);cx.fill()}
+        cx.globalAlpha=al*.55;cx.strokeStyle=acc;cx.lineWidth=1.2;cx.beginPath();cx.arc(x,y,10+ap*8,0,6.2832);cx.stroke();cx.globalAlpha=al*.3*(1-ap);cx.beginPath();cx.arc(x,y,18+ap*26,0,6.2832);cx.stroke();
+        cx.globalAlpha=al;cx.fillStyle=acc;cx.shadowColor=acc;cx.shadowBlur=22;spark(x,y,14*ap*pul);cx.fill();cx.shadowBlur=0;
+        cx.fillStyle='#fff';spark(x,y,6*ap);cx.fill()}
+      else{cx.globalAlpha=al*Math.max(.35,.85-rank*.025)*ap;cx.fillStyle='#fff';spark(x,y,6*(.6+.4*ap));cx.fill()}
       /* label */
-      const txt=up?w.w.toUpperCase():w.w,fs=isCur?sz:Math.max(10,sz*.34);
-      cx.font=`${isCur?800:600} ${fs}px ${fam}`;const tw=cx.measureText(txt).width;
-      let right=x<cW*.58,lx=right?x+(isCur?16:9):x-(isCur?16:9);
-      if(right&&lx+tw>cW-14)right=false,lx=x-(isCur?16:9);
-      if(!right&&lx-tw<14)right=true,lx=x+(isCur?16:9);
+      const txt=up?w.w.toUpperCase():w.w,fs=isCur?sz:Math.max(13,sz*.46);
+      cx.font=`${isCur?700:500} ${fs}px ${fam}`;const tw=cx.measureText(txt).width;
+      let right=x<cW*.58,lx=right?x+(isCur?22:12):x-(isCur?22:12);
+      if(right&&lx+tw>cW-14)right=false,lx=x-(isCur?22:12);
+      if(!right&&lx-tw<14)right=true,lx=x+(isCur?22:12);
       cx.textAlign=right?'left':'right';cx.textBaseline='middle';
-      if(isCur){const sc=.72+.28*ap;cx.save();cx.translate(lx,y-4*(1-ap));cx.scale(sc,sc);cx.globalAlpha=al*ap;cx.fillStyle='#fff';cx.shadowColor=acc;cx.shadowBlur=26;cx.fillText(txt,0,0);cx.shadowBlur=10;cx.fillText(txt,0,0);cx.restore()}
+      if(isCur){const sc=.72+.28*ap;cx.save();cx.translate(lx,y-4*(1-ap));cx.scale(sc,sc);cx.globalAlpha=al*ap;cx.fillStyle='#fff';cx.shadowColor=acc;cx.shadowBlur=14;cx.fillText(txt,0,0);cx.restore()}
       else{cx.globalAlpha=al*ap*Math.max(.38,.8-rank*.03);cx.fillStyle='#fff';cx.fillText(txt,lx,y+1)}}}
   cx.globalAlpha=1;
 }
