@@ -382,6 +382,38 @@ body.spatial #kin{display:none}
 #kin .knp div{min-width:0}#kin .knp b,#kin .knp span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #kin .knp b{font-size:14px;font-weight:700}#kin .knp span{font-size:12px;opacity:.6}
 #kin .kpg{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent);opacity:.8}
+/* birthday */
+#bdc{position:fixed;inset:0;z-index:48;pointer-events:none}
+#bday{position:fixed;inset:0;z-index:46;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:var(--font);color:#fff;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 28%,color-mix(in srgb,var(--accent) 38%,#1d1008) 0,#0b0709 62%,#050407 100%)}
+#bday.on{display:flex;animation:bdIn .6s ease both}
+@keyframes bdIn{from{opacity:0}to{opacity:1}}
+#bday .bl{position:absolute;bottom:-18vh;width:var(--s);height:calc(var(--s)*1.22);border-radius:50% 50% 48% 48%;background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.55),transparent 30%),var(--c);opacity:.85;animation:blUp var(--d) linear infinite;animation-delay:var(--w);left:var(--x)}
+#bday .bl::after{content:'';position:absolute;left:50%;top:100%;width:1.5px;height:9vh;background:rgba(255,255,255,.35);transform:translateX(-50%)}
+@keyframes blUp{from{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-70vh) rotate(5deg)}to{transform:translateY(-150vh) rotate(-4deg)}}
+#bday .bx{position:relative;display:flex;flex-direction:column;align-items:center;gap:.5vh;padding:0 6vw}
+#bday .b1{font-size:clamp(20px,4.4vh,42px);font-style:italic;font-weight:600;color:color-mix(in srgb,var(--accent) 25%,#fff3e0);animation:kwIn .7s cubic-bezier(.2,1.25,.3,1) .15s backwards}
+#bday .b2{font-size:clamp(46px,min(15vh,13vw),150px);font-weight:800;letter-spacing:-.04em;line-height:.95;color:#fff3e0;animation:kwIn .8s cubic-bezier(.2,1.25,.3,1) .45s backwards;text-shadow:0 4px 40px rgba(0,0,0,.4)}
+#bday .b3{margin-top:1vh;font-size:clamp(26px,min(8vh,7vw),78px);font-weight:800;letter-spacing:-.02em;color:#1b0f0a;background:color-mix(in srgb,var(--accent) 78%,#fff);padding:.04em .3em .1em;border-radius:.12em;rotate:-2deg;animation:kwIn .8s cubic-bezier(.2,1.25,.3,1) .8s backwards;box-shadow:0 .1em .6em -.15em rgba(0,0,0,.5)}
+#bday .bs{margin-top:2.2vh;font-size:clamp(14px,2.2vh,20px);opacity:.8;max-width:34em;line-height:1.45;animation:kwIn .7s ease 1.2s backwards}
+#bday svg.cake{width:clamp(130px,26vh,230px);margin-top:2vh;cursor:pointer;overflow:visible;animation:kwIn .8s cubic-bezier(.2,1.25,.3,1) 1s backwards;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+#bday .fl{transform-box:fill-box;transform-origin:50% 100%;animation:flick .45s ease-in-out infinite alternate}
+#bday .fl:nth-child(2n){animation-delay:-.2s}#bday .fl:nth-child(3n){animation-delay:-.33s}
+@keyframes flick{from{transform:scale(1,1) rotate(-3deg)}to{transform:scale(.88,1.1) rotate(3deg)}}
+#bday .cake.out .fl{animation:none;transform:scale(0);opacity:0;transition:transform .35s,opacity .35s}
+#bday .sm{opacity:0;transform-box:fill-box;transform-origin:center}
+#bday .cake.out .sm{animation:smk 1.6s ease-out both}
+@keyframes smk{0%{opacity:.7;transform:translateY(0) scale(.5)}100%{opacity:0;transform:translateY(-40px) scale(2)}}
+#bday .bw{font-size:13px;opacity:.65;margin-top:.6vh;letter-spacing:.04em}
+#bday .bbt{display:flex;gap:12px;margin-top:2.4vh;flex-wrap:wrap;justify-content:center;animation:kwIn .7s ease 1.5s backwards}
+#bday .bbt button{padding:13px 22px;border-radius:99px;font-weight:700;font-size:15px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff}
+#bday .bbt button.pri{background:var(--accent);color:#120a06;border-color:transparent}
+#bdAsk{position:fixed;left:50%;bottom:104px;transform:translate(-50%,20px);z-index:44;display:none;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;max-width:min(560px,92vw);padding:14px 18px;border-radius:20px;background:rgba(16,12,20,.92);border:1px solid rgba(255,255,255,.14);box-shadow:0 20px 60px rgba(0,0,0,.5);font-size:13.5px;line-height:1.4}
+#bdAsk.on{display:flex;animation:bdAskIn .5s cubic-bezier(.2,1,.3,1) both}
+@keyframes bdAskIn{to{transform:translate(-50%,0)}}
+#bdAsk input{padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff;color-scheme:dark;font:inherit}
+#bdAsk button{padding:8px 14px;border-radius:99px;background:rgba(255,255,255,.1);font-weight:600}
+#bdAsk button.pri{background:var(--accent);color:#000}
 </style>
 </head>
 <body>
@@ -412,6 +444,29 @@ body.spatial #kin{display:none}
   <div class="w" data-w="cal" data-label="Calendar"><div id="cal" class="card2"><div id="calT"></div><div id="calg"></div></div></div>
 </div>
 
+<canvas id="bdc"></canvas>
+<div id="bday"><div class="bx">
+  <div class="b1">Happy</div><div class="b2">Birthday</div><div class="b3"><span id="bdName"></span> 🎂</div>
+  <p class="bs" id="bdSub"></p>
+  <svg class="cake" id="bdCake" viewBox="0 0 240 210" aria-label="Birthday cake — tap to blow out the candles">
+    <ellipse cx="120" cy="194" rx="108" ry="11" fill="rgba(255,255,255,.14)"/>
+    <rect x="28" y="124" width="184" height="66" rx="15" fill="#ff8fb1"/><rect x="28" y="124" width="184" height="15" rx="8" fill="#fff4e6"/>
+    <g fill="#fff4e6"><circle cx="46" cy="139" r="7"/><circle cx="76" cy="141" r="8"/><circle cx="108" cy="139" r="7"/><circle cx="140" cy="142" r="8"/><circle cx="172" cy="139" r="7"/><circle cx="198" cy="140" r="7"/></g>
+    <g><rect x="48" y="160" width="9" height="4" rx="2" fill="#7ae0ff" transform="rotate(25 52 162)"/><rect x="92" y="168" width="9" height="4" rx="2" fill="#ffd166" transform="rotate(-30 96 170)"/><rect x="140" y="162" width="9" height="4" rx="2" fill="#b49bff" transform="rotate(40 144 164)"/><rect x="184" y="168" width="9" height="4" rx="2" fill="#7dffb0" transform="rotate(-20 188 170)"/></g>
+    <rect x="58" y="80" width="124" height="48" rx="12" fill="#ffb86b"/><rect x="58" y="80" width="124" height="13" rx="7" fill="#fff4e6"/>
+    <g fill="#fff4e6"><circle cx="72" cy="93" r="6"/><circle cx="98" cy="95" r="7"/><circle cx="126" cy="93" r="6"/><circle cx="152" cy="95" r="7"/><circle cx="170" cy="93" r="5"/></g>
+    <g id="bdCandles">
+      <g><rect x="81" y="50" width="7" height="30" rx="2" fill="#7ae0ff"/><g class="fl"><ellipse cx="84.5" cy="42" rx="5.5" ry="10" fill="#ffd166"/><ellipse cx="84.5" cy="44" rx="2.6" ry="5.5" fill="#fff6d6"/></g><circle class="sm" cx="84.5" cy="36" r="6" fill="#fff"/></g>
+      <g><rect x="101" y="46" width="7" height="34" rx="2" fill="#ff6b9a"/><g class="fl"><ellipse cx="104.5" cy="38" rx="5.5" ry="10" fill="#ffd166"/><ellipse cx="104.5" cy="40" rx="2.6" ry="5.5" fill="#fff6d6"/></g><circle class="sm" cx="104.5" cy="32" r="6" fill="#fff"/></g>
+      <g><rect x="116.5" y="42" width="7" height="38" rx="2" fill="#ffd166"/><g class="fl"><ellipse cx="120" cy="34" rx="5.5" ry="10" fill="#ffd166"/><ellipse cx="120" cy="36" rx="2.6" ry="5.5" fill="#fff6d6"/></g><circle class="sm" cx="120" cy="28" r="6" fill="#fff"/></g>
+      <g><rect x="132" y="46" width="7" height="34" rx="2" fill="#7dffb0"/><g class="fl"><ellipse cx="135.5" cy="38" rx="5.5" ry="10" fill="#ffd166"/><ellipse cx="135.5" cy="40" rx="2.6" ry="5.5" fill="#fff6d6"/></g><circle class="sm" cx="135.5" cy="32" r="6" fill="#fff"/></g>
+      <g><rect x="152" y="50" width="7" height="30" rx="2" fill="#b49bff"/><g class="fl"><ellipse cx="155.5" cy="42" rx="5.5" ry="10" fill="#ffd166"/><ellipse cx="155.5" cy="44" rx="2.6" ry="5.5" fill="#fff6d6"/></g><circle class="sm" cx="155.5" cy="36" r="6" fill="#fff"/></g>
+    </g>
+  </svg>
+  <div class="bw" id="bdWish">tap the cake — make a wish</div>
+  <div class="bbt"><button class="pri" id="bdMix">🎵 Play a birthday mix</button><button id="bdGo">Let’s go</button></div>
+</div></div>
+<div id="bdAsk"><span>🎂 <b>When’s your birthday?</b> Spotify doesn’t share it with apps — tell AURA once (it stays on this device) and it’ll do something special that day.</span><input type="date" id="bdAskIn"><button class="pri" id="bdAskSave">Save</button><button id="bdAskNo">Not now</button></div>
 <div id="kin"><div class="kclk"><small id="kinD"></small><b id="kinT"></b></div><div class="knp"><img id="kinImg" alt=""><div><b id="kinN"></b><span id="kinA"></span></div></div><div class="kst" id="kinStage"></div><div class="kpg" id="kinPg"></div></div>
 <div id="space"><div id="world">
   <section class="sp" data-p="clock"><div class="in spc"><div class="gr" id="spGr"></div><div class="tm" id="spClkT"></div><div class="dt" id="spClkD"></div><div class="wx"><span id="spWxI"></span><b id="spWxT"></b><em id="spWxD"></em></div></div></section>
@@ -508,6 +563,7 @@ const DEFAULTS={
   clock:{show:true,h24:true,seconds:false,date:true,size:44},
   weather:{show:true,city:'',useLocation:false,units:'c'},
   acl:{show:false,size:150,seconds:true,numerals:true},
+  bday:{md:'',year:0,on:true,age:true,rain:true,asked:false,last:'',eve:0},
   greet:{show:false,name:'',size:34,date:false},
   text:{show:false,text:'Good vibes only',size:36,weight:700,italic:false,opacity:.9,align:'center'},
   img:{show:false,src:'',size:160,w:160,h:160,shape:'rounded',opacity:1},
@@ -1110,7 +1166,7 @@ function drawSpec(t){
 }
 function tickExtras(){
   const d=new Date();
-  if(cfg.greet.show){const hr=d.getHours();$('#grT').textContent=(hr<5?'Good night':hr<12?'Good morning':hr<17?'Good afternoon':hr<21?'Good evening':'Good night')+(cfg.greet.name?', '+cfg.greet.name:'');$('#grD').textContent=cfg.greet.date?d.toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'}):''}
+  if(cfg.greet.show){const hr=d.getHours();$('#grT').textContent=(bdOn()?'Happy birthday':hr<5?'Good night':hr<12?'Good morning':hr<17?'Good afternoon':hr<21?'Good evening':'Good night')+(cfg.greet.name?', '+cfg.greet.name:'');$('#grD').textContent=cfg.greet.date?d.toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'}):''}
   if(cfg.wclk.show)renderWclk(d);
   if(cfg.cal.show)renderCal(d);
   renderTimer();
@@ -1166,7 +1222,7 @@ function frame(t){
   const p=pos();
   $('#pFill').style.width=(S.track?clamp(p/(S.track.dur||1),0,1)*100:0)+'%';
   const s=Math.floor(p/1000);if(s!==lastSec){lastSec=s;$('#pCur').textContent=fmt(p)}
-  updateLyrics(p);drawViz(t);drawCons(t);drawSpatial(t);drawKinetic(t);if(cfg.acl.show)drawAcl();if(cfg.spec.show)drawSpec(t);if(document.body.classList.contains('editing'))posHandles();
+  updateLyrics(p);drawViz(t);drawCons(t);drawSpatial(t);drawKinetic(t);drawBday(t);if(cfg.acl.show)drawAcl();if(cfg.spec.show)drawSpec(t);if(document.body.classList.contains('editing'))posHandles();
 }
 
 /* ───────── library / devices panel ───────── */
@@ -1272,6 +1328,11 @@ const SCHEMA=[
   {type:'custom',build(){const r=document.createElement('div');r.className='row';const l=document.createElement('label');l.textContent='Preset';const s=document.createElement('select');s.innerHTML='<option value="">Choose…</option>'+Object.entries(PRESETS).map(([k,p])=>`<option value="${k}">${p.label}</option>`).join('');s.onchange=()=>{if(s.value){applyPreset(s.value);buildSettings()}};r.append(l,s);return r}},
   {type:'btn',l:'Drag & resize widgets on screen (E)',fn:()=>{closePanel();setEdit(true)}},
   {type:'note',l:'In layout mode: drag a widget to move it, scroll the mouse wheel (or pinch) over it to resize.'}]},
+ {t:'Birthday 🎂',items:[
+  {type:'custom',build:()=>{const i=document.createElement('input');i.type='date';i.value=cfg.bday.md?(cfg.bday.year||2000)+'-'+cfg.bday.md:'';i.onchange=()=>bdSet(i.value);return row('My birthday',i)}},
+  {k:'bday.on',l:'Celebrate on my birthday',type:'toggle'},{k:'bday.age',l:'Show my age',type:'toggle'},{k:'bday.rain',l:'Confetti while music plays that day',type:'toggle'},
+  {type:'btn',l:'Preview the celebration',fn:()=>{closePanel();setTimeout(()=>bdayShow(true),250)}},
+  {type:'note',l:(cfg.bday.md?(bdToday()?'Happy birthday! 🎉':'Next birthday in '+bdDaysUntil()+' day'+(bdDaysUntil()===1?'':'s')+'. '):'')+'Spotify doesn’t share your birthday with apps, so AURA asks once and keeps it on this device (it’s only included if you export your settings). On the day: a full-screen celebration with confetti, balloons and a cake to blow out, “Happy birthday” in your greeting, confetti on every song change, and a one-tap birthday mix.'}]},
  {t:'Spatial view',items:[
   {k:'spatial.on',l:'Spatial view (3D panels)',type:'toggle'},
   {k:'spatial.lyricStyle',l:'Lyric cards',type:'select',o:[['mix','Mix — new style every line'],['pay','Pay pill'],['msg','Message bubbles'],['isl','Island pill'],['vc','Voice note'],['cd','Gradient card']]},
@@ -1790,7 +1851,7 @@ function spStudy(){
 }
 function spClock(){
   const d=new Date(),H=d.getHours(),C=cfg.clock,nm=cfg.greet.name;
-  $('#spGr').textContent=(H<5?'Good night':H<12?'Good morning':H<17?'Good afternoon':H<21?'Good evening':'Good night')+(nm?', '+nm:'');
+  $('#spGr').textContent=(bdOn()?'Happy birthday 🎂':H<5?'Good night':H<12?'Good morning':H<17?'Good afternoon':H<21?'Good evening':'Good night')+(nm?', '+nm:'');
   $('#spClkT').textContent=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:!C.h24});
   $('#spClkD').textContent=d.toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'});
   $('#spWxI').textContent=$('#wIcon').textContent;$('#spWxT').textContent=$('#wTemp').textContent;$('#spWxD').textContent=$('#wDesc').textContent;
@@ -1846,6 +1907,7 @@ const KE_MAP={heart:'❤️',hearts:'❤️',love:'❤️',loved:'❤️',lover:
   home:'🏠',time:'⏳',pain:'💔',broken:'💔',break:'💔',broke:'💔',smile:'😊',world:'🌍',lonely:'🥀',alone:'🥀',drunk:'🍷',wine:'🍷',drink:'🍷',rose:'🌹',roses:'🌹',flowers:'🌹',
   angel:'😇',devil:'😈',hell:'😈',fly:'🕊️',flying:'🕊️',wings:'🕊️',ocean:'🌊',sea:'🌊',waves:'🌊',light:'✨',lights:'✨',shine:'✨',shining:'✨',ghost:'👻',gold:'🪙',diamond:'💎',diamonds:'💎',
   streetlights:'💡',shadow:'🌑',shadows:'🌑',echoes:'🔊',avenue:'🛣️',road:'🛣️',dawn:'🌅',morning:'🌅',sky:'🌌',wind:'💨',storm:'⛈️',ice:'🧊',cold:'🥶',crown:'👑',queen:'👑',king:'👑'};
+KE_MAP.birthday='🎂';KE_MAP.bday='🎂';KE_MAP.cake='🍰';KE_MAP.party='🎉';KE_MAP.celebrate='🎊';KE_MAP.celebration='🎊';KE_MAP.balloons='🎈';KE_MAP.wish='🌠';KE_MAP.candles='🕯️';
 const kinEmoji=w=>KE_MAP[w.toLowerCase().replace(/[^a-z']/g,'').replace(/'+$/,'')]||'';
 const kinOn=()=>cfg.lyrics.show&&cfg.lyrics.mode==='kinetic'&&!cfg.spatial.on;
 const KE=$('#kin'),KS=$('#kinStage'),kin={for:null,sig:'',chunks:[],cur:null,np:'',sec:-1};
@@ -1897,6 +1959,83 @@ function drawKinetic(t){
   if(kin.cur&&kin.cur.ch){const c=kin.cur,ws=c.ch.words;let n=0;while(n<ws.length&&ws[n].t<=P)n++;
     if(n!==c.n){for(let j=0;j<c.el._w.length;j++){const e=c.el._w[j];e.classList.toggle('show',j<n);e.classList.toggle('dim',j<n-1)}c.n=n}}
 }
+
+/* ───────── birthday: asked once (Spotify never shares it), celebrated on the day ───────── */
+function bdMD(){const B=cfg.bday;if(!B.md)return null;let[m,d]=B.md.split('-').map(Number);const y=new Date().getFullYear();
+  if(m===2&&d===29&&!(y%4===0&&(y%100!==0||y%400===0)))d=28;return[m,d]}
+function bdToday(){const md=bdMD();if(!md)return false;const n=new Date();return n.getMonth()+1===md[0]&&n.getDate()===md[1]}
+const bdOn=()=>!!(cfg.bday.on&&bdToday());
+function bdDaysUntil(){const md=bdMD();if(!md)return null;const n=new Date(),t0=new Date(n.getFullYear(),n.getMonth(),n.getDate());let t1=new Date(n.getFullYear(),md[0]-1,md[1]);if(t1<t0)t1=new Date(n.getFullYear()+1,md[0]-1,md[1]);return Math.round((t1-t0)/864e5)}
+function bdSet(v){ // v = 'YYYY-MM-DD' from a date input
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v||'');if(!m)return false;
+  cfg.bday.md=m[2]+'-'+m[3];cfg.bday.year=+m[1];cfg.bday.asked=true;cfg.bday.last='';save();
+  const dd=bdDaysUntil();toast(dd===0?'🎂 That’s today!':'Saved — AURA will celebrate in '+dd+' day'+(dd===1?'':'s')+' 🎈',3800);
+  if(bdToday()&&cfg.bday.on)setTimeout(()=>bdayShow(false),600);
+  if(panelKind==='settings')buildSettings();return true}
+/* confetti */
+const BDC=$('#bdc'),bdx=BDC.getContext('2d'),bdp=[],BDCOL=['#ffd166','#ff6b9a','#7ae0ff','#b49bff','#7dffb0','#ff9f5a','#ffffff'];
+let bdLast=0,bdRainAt=0,bdTrack=null,bdDirty=false;
+function bdBurst(x,y,n=90,pw=1){for(let i=0;i<n;i++){const a=Math.random()*6.283,s=(4+Math.random()*9)*pw;bdp.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-6*pw,r:Math.random()*6.28,vr:(Math.random()-.5)*.4,w:6+Math.random()*7,h:3+Math.random()*5,c:BDCOL[(Math.random()*BDCOL.length)|0],ph:Math.random()*6.28})}}
+function bdFall(n){for(let i=0;i<n;i++)bdp.push({x:Math.random()*innerWidth,y:-12,vx:(Math.random()-.5)*2,vy:1.5+Math.random()*2.5,r:Math.random()*6.28,vr:(Math.random()-.5)*.3,w:6+Math.random()*6,h:3+Math.random()*4,c:BDCOL[(Math.random()*BDCOL.length)|0],ph:Math.random()*6.28})}
+function drawBday(t){
+  const dt=Math.min(2.5,Math.max(.4,(t-bdLast)/16.7||1));bdLast=t;
+  const id=S.track?.id||null;
+  if(bdOn()&&!$('#bday').classList.contains('on')){
+    if(id&&id!==bdTrack&&bdTrack!==null)bdBurst(innerWidth/2,innerHeight*.42,70,.9);
+    if(cfg.bday.rain&&S.playing&&t>bdRainAt){bdRainAt=t+420;bdFall(2)}}
+  bdTrack=id;
+  if(!bdp.length){if(bdDirty){bdx.clearRect(0,0,BDC.width,BDC.height);bdDirty=false}return}
+  if(BDC.width!==innerWidth||BDC.height!==innerHeight){BDC.width=innerWidth;BDC.height=innerHeight}
+  bdx.clearRect(0,0,BDC.width,BDC.height);bdDirty=true;
+  for(let i=bdp.length-1;i>=0;i--){const p=bdp[i];
+    p.vy=Math.min(p.vy+.26*dt,6.5);p.vx*=Math.pow(.985,dt);if(p.vy>0)p.vx+=Math.sin(t/300+p.ph)*.06;
+    p.x+=p.vx*dt;p.y+=p.vy*dt;p.r+=p.vr*dt;
+    if(p.y>BDC.height+20){bdp.splice(i,1);continue}
+    bdx.save();bdx.translate(p.x,p.y);bdx.rotate(p.r);bdx.scale(1,Math.cos(p.r*2.3+p.ph));bdx.fillStyle=p.c;bdx.fillRect(-p.w/2,-p.h/2,p.w,p.h);bdx.restore()}
+}
+/* celebration takeover */
+let bdBalloons=false;
+function bdayShow(preview){
+  const el=$('#bday');if(el.classList.contains('on'))return;const B=cfg.bday;
+  if(!bdBalloons){bdBalloons=true;const cols=['#ff6b9a','#ffd166','#7ae0ff','#b49bff','#7dffb0','#ff9f5a'];
+    for(let i=0;i<11;i++){const b=h('i','bl');b.style.cssText=`--x:${4+i*9}%;--s:${34+(i*17)%30}px;--c:${cols[i%6]};--d:${11+(i*3)%7}s;--w:${-(i*1.7)}s`;el.insertBefore(b,el.firstChild)}}
+  const nm=cfg.greet.name||'you';$('#bdName').textContent=nm;
+  const age=B.year&&B.age?new Date().getFullYear()-B.year:0;
+  const bits=[];if(age>0&&age<130)bits.push('Turning '+age+' today.');
+  if(typeof SD!=='undefined'&&SD.exam&&SD.exam.date)bits.push('The study countdown can wait — today is yours.');else bits.push('Today is yours.');
+  $('#bdSub').textContent=bits.join(' ');
+  $('#bdCake').classList.remove('out');$('#bdWish').textContent='tap the cake — make a wish';
+  el.classList.add('on');
+  setTimeout(()=>bdBurst(innerWidth/2,innerHeight*.34,150,1.25),450);
+  setTimeout(()=>{bdBurst(innerWidth*.12,innerHeight*.7,70,1);bdBurst(innerWidth*.88,innerHeight*.7,70,1)},1100);
+  if(!preview){B.last=ymd(new Date());save()}
+}
+$('#bdCake').onclick=()=>{const c=$('#bdCake'),out=c.classList.toggle('out');$('#bdWish').textContent=out?'wish made ✨ (tap to relight)':'tap the cake — make a wish';
+  const r=c.getBoundingClientRect();if(out)bdBurst(r.left+r.width/2,r.top+10,90,1)};
+$('#bdGo').onclick=()=>{$('#bday').classList.remove('on')};
+async function bdMix(){
+  $('#bday').classList.remove('on');
+  if(mode!=='spotify'){toast('🎉 Happy birthday!',3000);bdBurst(innerWidth/2,innerHeight*.4,100,1);return}
+  toast('Finding a birthday mix…',2500);
+  const keep=store.get('aura.lastCtx',null);
+  try{const j=await api('/search?type=playlist&limit=10&q='+encodeURIComponent('birthday party hits'));
+    const it=(j?.playlists?.items||[]).filter(Boolean)[0];
+    if(it&&await spPlay({context_uri:it.uri})){toast('🎂 '+it.name,3500);if(keep)store.set('aura.lastCtx',keep);else store.del('aura.lastCtx');return}
+  }catch(e){}
+  startDefault();
+}
+$('#bdMix').onclick=bdMix;
+$('#bdAskSave').onclick=()=>{if(bdSet($('#bdAskIn').value))$('#bdAsk').classList.remove('on');else toast('Pick your birthday first')};
+$('#bdAskNo').onclick=()=>$('#bdAsk').classList.remove('on');
+let bdTries=0;
+function bdayInit(){
+  if(!mode){if(++bdTries<25)setTimeout(bdayInit,1200);return}
+  const B=cfg.bday;
+  if(!B.md){if(!B.asked&&mode==='spotify'){B.asked=true;save();$('#bdAsk').classList.add('on')}return}
+  if(bdOn()&&B.last!==ymd(new Date()))bdayShow(false);
+  else if(B.on&&bdDaysUntil()===1&&B.eve!==new Date().getFullYear()){B.eve=new Date().getFullYear();save();toast('Your birthday is tomorrow 🎈',5000)}
+}
+setTimeout(bdayInit,2200);
 
 /* boot */
 (async()=>{
